@@ -1,0 +1,2 @@
+Every .rb file in this directory will be automatically required on every
+startup of irb using Rails' script/console.
