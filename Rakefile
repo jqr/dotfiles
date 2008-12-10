@@ -19,9 +19,12 @@ desc "Install all dotfiles"
 task :install do
   home = ENV['HOME']
   pwd = File.dirname(__FILE__)
+
   symlink(pwd + '/irbrc', home + '/.irbrc')
   symlink(pwd + '/irbrc.d', home + '/.irbrc.d')
   symlink(pwd + '/railsrc', home + '/.railsrc')
   symlink(pwd + '/railsrc.d', home + '/.railsrc.d')
+
+  symlink(pwd + '/bash_profile', home + '/.bash_profile')
 
 end
