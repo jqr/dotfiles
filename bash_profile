@@ -7,6 +7,13 @@ alias du='du -hc'
 alias cd..='cd ..'
 alias more='less'
 alias mkdir='mkdir -p'
+
+function touch {
+  dir=`expr "$1" : '\(.*\/\)'`
+  mkdir -p $dir
+  /usr/bin/touch $1
+}
+
 alias recent='ls -lAt | head'
 
 alias m="mate"
