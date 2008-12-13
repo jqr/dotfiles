@@ -10,7 +10,10 @@ alias mkdir='mkdir -p'
 
 function touch {
   dir=`expr "$1" : '\(.*\/\)'`
-  mkdir -p $dir
+  if [ $dir ] 
+    then
+    mkdir -p $dir
+  fi
   /usr/bin/touch $1
 }
 
@@ -25,7 +28,7 @@ alias gd='git diff'
 alias ga='git add'
 alias gc='git commit -v'
 alias gp='git pull --rebase'
-alias gp='gp && git push'
+alias gpp='gp && git push'
 
 
 export EDITOR='mate -w'
