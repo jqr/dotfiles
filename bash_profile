@@ -46,3 +46,9 @@ function mategem {
   GEMDIR=`gem env gemdir`/gems
   mate $GEMDIR/`ls $GEMDIR | grep $1 | sort | tail -1`
 }
+
+
+parse_git_branch() {
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+PS1="\h \w\$(parse_git_branch) $ "
