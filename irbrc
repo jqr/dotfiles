@@ -1,8 +1,3 @@
-ETC_IRBRC = '/etc/irbrc'
-if File.exist?(ETC_IRBRC)
-  eval File.read(ETC_IRBRC)
-end
-
 def require_rb_files_from(dir)
   Dir.glob(File.join(dir, '*.rb')) do |file|
     require file
