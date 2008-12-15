@@ -26,5 +26,6 @@ task :install do
   symlink(pwd + '/railsrc.d', home + '/.railsrc.d')
 
   symlink(pwd + '/bash_profile', home + '/.bash_profile')
+  symlink(pwd + '/bash_profile.d', home + '/.bash_profile.d')
 
 end

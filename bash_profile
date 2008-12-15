@@ -54,3 +54,10 @@ parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 PS1="\h \w\$(parse_git_branch) $ "
+
+
+for a in `ls $HOME/.bash_profile.d/*.sh`; do 
+  if [ -f "$a" ]; then
+    source $a
+  fi
+done
