@@ -25,8 +25,10 @@ alias m="mate"
 # Git
 alias gs='git status'
 alias gd='git diff'
+alias gdh='git diff HEAD'
 alias ga='git add'
 alias gc='git commit -v'
+alias gca='gc -a'
 alias gp='git pull --rebase'
 alias gpp='gp && git push'
 
