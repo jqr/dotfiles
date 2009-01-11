@@ -4,7 +4,7 @@ alias gdh='git diff HEAD'
 alias ga='git add'
 alias gc='git commit -v'
 alias gca='gc -a'
-alias gp='git pull --rebase || which growlnotify > /dev/null && growlnotify -m "pull failed" "Git"'
+alias gp='git pull --rebase || (which growlnotify > /dev/null && growlnotify -m "pull failed" "Git")'
 alias gpp='gp && git push'
 alias grc='git rebase --continue'
 
