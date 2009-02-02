@@ -5,7 +5,7 @@ alias ga='git add'
 alias gc='git commit -v'
 alias gca='gc -a'
 alias gp='git pull --rebase || (which growlnotify > /dev/null && growlnotify -m "pull failed" "Git")'
-alias gpp='gp && git push'
+alias gpp='gp && git push origin `current_git_branch`'
 alias grc='git rebase --continue'
 
 current_git_branch() {
