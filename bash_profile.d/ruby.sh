@@ -1,12 +1,19 @@
-function cdgem {
-  cd `gem env gemdir`/gems
-  cd `ls | grep $1 | sort | tail -1`
+function gemdir {
+  if [ $1 ]
+    then
+    ls -d `gemdir`/$1* | sort | tail -1
+  else
+    echo `gem env gemdir`/gems
+  fi
 }
+
+function cdgem {
+  cd `gemdir $1`
+}
+
 function gemdoc {
-  GEMDIR=`gem env gemdir`/doc
-  open $GEMDIR/`ls $GEMDIR | grep $1 | sort | tail -1`/rdoc/index.html
+  open `gemdir $1`/rdoc/index.html
 }
 function editgem {
-  GEMDIR=`gem env gemdir`/gems
-  $EDITOR $GEMDIR/`ls $GEMDIR | grep $1 | sort | tail -1`
+  $EDITOR `gemdir $1`
 }
