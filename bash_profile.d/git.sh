@@ -1,3 +1,4 @@
+alias gi='git init; printf ".DS_Store\nThumbs.db\n" >> .gitignore'
 alias gs='git status'
 alias gd='git diff'
 alias gdh='git diff HEAD'
