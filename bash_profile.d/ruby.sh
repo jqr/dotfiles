@@ -12,7 +12,8 @@ function cdgem {
 }
 
 function gemdoc {
-  open `gemdir $1`/rdoc/index.html
+  open `gemdir $1`/doc/index.html ||
+  open `gemdir $1`/README*
 }
 function editgem {
   $EDITOR `gemdir $1`
