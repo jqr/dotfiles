@@ -11,7 +11,7 @@ alias ga='git add'
 alias gc='git commit -v'
 alias gca='gc -a'
 
-alias gp='git pull --rebase || (which growlnotify > /dev/null && growlnotify -m "pull failed" "Git" && false)'
+alias gp='git pull --rebase || (notify "pull failed" "Git" && false)'
 alias gpp='gp && git push origin `current_git_branch`'
 alias grc='git rebase --continue'
 
