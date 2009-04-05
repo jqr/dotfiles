@@ -8,3 +8,4 @@ export GIT_EDITOR='mate -wl1'
 PS1="\h \w \$(current_git_branch)$ "
 
 export PATH=$HOME/bin:$PATH
+
