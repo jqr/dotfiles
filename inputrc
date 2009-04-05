@@ -1,0 +1,5 @@
+# http://codeinthehole.com/archives/17-The-most-important-command-line-tip-incremental-history-searching-with-.inputrc.html
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\e[C": forward-char
+"\e[D": backward-char
