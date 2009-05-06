@@ -18,6 +18,16 @@ alias grc='git rebase --continue'
 alias gb='git branch'
 complete -o default -o nospace -F _git_branch gb
 
+grb() {
+  # TODO: investigate "fatal" warning
+  starting_git_branch=`current_git_branch`
+  git checkout -b $1 && 
+  git push origin $1 && 
+  git checkout $starting_git_branch && 
+  git branch -d $1 && 
+  git checkout -b $1 --track origin/$1
+}
+
 current_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
 }
