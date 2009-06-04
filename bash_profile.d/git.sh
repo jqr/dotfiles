@@ -18,6 +18,8 @@ alias grc='git rebase --continue'
 alias gb='git branch'
 complete -o default -o nospace -F _git_branch gb
 
+alias gitx='gitx --all'
+
 grb() {
   # TODO: investigate "fatal" warning
   starting_git_branch=`current_git_branch`
