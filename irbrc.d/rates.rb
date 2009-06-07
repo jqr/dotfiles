@@ -23,9 +23,11 @@ def rate(options = {})
     rate = 0 unless rate.finite?
     last_value = values.last.first
     print clear if options[:clear]
-    time_to_zero = if rate != 0 && (rate.abs / rate) != (last_value.abs / last_value)
-      "%.3f hours" % (-last_value.to_f / rate / 60 / 60)
-    end
+    time_to_zero = 
+      if rate != 0 && last_value != 0 && (rate.abs / rate) != (last_value.abs / last_value)
+        "%.3f hours" % (-last_value.to_f / rate / 60 / 60)
+      end
+    
     puts "%10i (%.3f/sec) #{time_to_zero}" % [last_value, rate]
     puts unless options[:clear]
     sleep options[:delay]
@@ -57,9 +59,11 @@ def rates(options = {})
       rate = (value_delta.to_f / time_delta)
       rate = 0 unless rate.finite?
       last_value = values.last.first[key] 
-      time_to_zero = if rate != 0 && (rate.abs / rate) != (last_value.abs / last_value)
-        "%.3f hours" % (-last_value.to_f / rate / 60 / 60)
-      end
+      time_to_zero = 
+        if rate != 0 && last_value != 0 && (rate.abs / rate) != (last_value.abs / last_value)
+          "%.3f hours" % (-last_value.to_f / rate / 60 / 60)
+        end
+
       puts "%20s: %9i (%.3f/sec) #{time_to_zero}" % [key, last_value, rate]
     end
     puts unless options[:clear]
