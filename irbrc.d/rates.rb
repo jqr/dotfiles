@@ -9,7 +9,7 @@ def rate(options = {})
   clear = `clear`
   defaults = {
     :delay => 1,
-    :width => 3,
+    :width => 5,
     :clear => true
   }
   options = defaults.merge(options)
@@ -42,7 +42,7 @@ def rates(options = {})
   clear = `clear`
   defaults = {
     :delay => 1,
-    :width => 10,
+    :width => 5,
     :clear => true
   }
   options = defaults.merge(options)
