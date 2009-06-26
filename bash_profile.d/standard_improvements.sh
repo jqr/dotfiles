@@ -10,3 +10,6 @@ function touch {
   /usr/bin/touch $1
 }
 
+function myip {
+  curl --silent 'www.whatismyip.com/automation/n09230945.asp'
+}
