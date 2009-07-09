@@ -13,6 +13,7 @@ alias gca='gc -a'
 
 alias gp='git pull --rebase || (notify "pull failed" "Git" && false)'
 alias gpp='gp && git push origin `current_git_branch`'
+alias gri='git rebase -i origin/master^'
 alias grc='git rebase --continue'
 
 alias gb='git branch'
