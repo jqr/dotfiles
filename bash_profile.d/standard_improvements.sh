@@ -11,5 +11,5 @@ function touch {
 }
 
 function myip {
-  curl --silent 'www.whatismyip.com/automation/n09230945.asp'
+  curl --silent 'www.whatismyip.com/automation/n09230945.asp' && echo
 }
