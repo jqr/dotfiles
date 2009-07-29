@@ -5,6 +5,7 @@ alias glp='git log -p'
 
 alias gs='git status'
 alias gd='git diff'
+alias gds='git diff --cached'
 alias gdh='git diff HEAD'
 
 alias ga='git add'
