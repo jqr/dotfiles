@@ -23,12 +23,8 @@ complete -o default -o nospace -F _git_branch gb
 alias gitx='gitx --all'
 
 grb() {
-  # TODO: investigate "fatal" warning
-  starting_git_branch=`current_git_branch`
-  git checkout -b $1 && 
-  git push origin $1 && 
-  git checkout $starting_git_branch && 
-  git branch -d $1 && 
+  git push origin master:refs/heads/$1 &&
+  git fetch origin &&
   git checkout -b $1 --track origin/$1
 }
 
