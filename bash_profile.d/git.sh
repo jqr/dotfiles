@@ -23,7 +23,7 @@ complete -o default -o nospace -F _git_branch gb
 alias gitx='gitx --all'
 
 grb() {
-  git push origin master:refs/heads/$1 &&
+  git push origin `current_git_branch`:refs/heads/$1
   git fetch origin &&
   git checkout -b $1 --track origin/$1
 }
