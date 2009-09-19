@@ -22,6 +22,15 @@ complete -o default -o nospace -F _git_branch gb
 
 alias gitx='gitx --all'
 
+ggc() {
+  set -- `du -ks`
+  before=$1
+  git reflog expire --expire=1.minute refs/heads/master && git fsck --unreachable && git prune && git gc 
+  set -- `du -ks`
+  after=$1
+  echo "Cleaned up $((before-after)) kb."
+}
+
 grb() {
   git push origin `current_git_branch`:refs/heads/$1
   git fetch origin &&
