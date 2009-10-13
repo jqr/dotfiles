@@ -1,4 +1,5 @@
 alias ..='cd ..'
+alias ...='cd ../..'
 alias cd..='cd ..'
 alias ll='ls -lh'
 alias la='ls -la'
