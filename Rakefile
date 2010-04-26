@@ -20,7 +20,7 @@ task :install do
   home = ENV['HOME']
   pwd = File.dirname(__FILE__)
 
-  %w(irbrc irbrc.d railsrc railsrc.d bash_profile bash_profile.d inputrc ackrc).each do |file|
+  %w(irbrc irbrc.d railsrc railsrc.d bash_profile bash_profile.d editrc inputrc ackrc).each do |file|
     symlink("#{pwd}/#{file}", "#{home}/.#{file}")
   end
 end
