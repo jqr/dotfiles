@@ -1,2 +1,4 @@
+# http://www.macosxhints.com/article.php?story=20080313113705760
+# not quite as good as inputrc, but decent 
 bind "\e[A" ed-search-prev-history
-bind "\e[A" ed-search-next-history
+bind "\e[B" ed-search-next-history
