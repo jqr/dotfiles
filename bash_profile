@@ -7,6 +7,6 @@ export GIT_EDITOR='mate -wl1'
 
 PS1="\h \w \$(current_git_branch)$ "
 
-export PATH=~/bin:~/.gem/ruby/1.8/bin:$PATH
+export PATH=~/bin:~/.gem/ruby/1.8/bin:~/.seeds/bin:$PATH
 
 if [[ -s ~/.rvm/scripts/rvm ]] ; then source ~/.rvm/scripts/rvm ; fi
