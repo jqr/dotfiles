@@ -1,1 +1,1 @@
-alias='rlwrap node-repl || node-repl'
+alias node-repl='rlwrap node-repl || node-repl'
