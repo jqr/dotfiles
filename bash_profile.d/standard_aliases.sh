@@ -8,4 +8,5 @@ alias la='ls -la'
 alias du='du -hc'
 alias more='less'
 
+alias e='$EDITOR'
 alias nano='nano -w'
