@@ -11,8 +11,11 @@ alias gds='git diff --cached'
 alias gdh='git diff HEAD'
 
 alias ga='git add'
+alias gap='git add -p'
 alias gc='git commit -v'
 alias gca='gc -a'
+
+alias gco="git checkout"
 
 alias gp='git pull --rebase || (notify "pull failed" "Git" && false)'
 alias gpp='gp && git push origin `current_git_branch`'
