@@ -8,5 +8,9 @@ alias la='ls -la'
 alias du='du -hc'
 alias more='less'
 
+
+export CLICOLOR=1
+export LSCOLORS=gxgxcxdxbxegedabagacad
+
 alias e='$EDITOR'
 alias nano='nano -w'
