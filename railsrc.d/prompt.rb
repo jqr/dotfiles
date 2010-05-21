@@ -1,1 +1,1 @@
-setup_custom_irb_prompt(File.basename(Dir.pwd))
+setup_custom_irb_prompt(File.basename(DETECTED_RAILS_ROOT))

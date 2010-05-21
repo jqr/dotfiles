@@ -1,1 +1,11 @@
+def detect_rails_root
+  dir = Dir.pwd
+  while (dir != '/') do
+    return dir if File.exists?(File.join(dir, 'config', 'environment.rb'))
+    dir = File.dirname(dir)
+  end
+end
+
+DETECTED_RAILS_ROOT = detect_rails_root
+
 require_rb_files_from(File.join(ENV['HOME'], '.railsrc.d'))
