@@ -22,7 +22,7 @@ function script_rails {
   rails_root=`rails_root`
   if [ -f "$rails_root/script/rails" ]; then
     "$rails_root/script/rails" "$@"
-  elif [ -f "$rails_root/script/$name" ]; then
+  elif [ -f "$rails_root/script/$1" ]; then
     local name
     name="$1"
     shift
