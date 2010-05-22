@@ -1,4 +1,8 @@
 def setup_custom_irb_prompt(name)
+  green = "\e[32m"
+  red = "\e[31m"
+  clear = "\e[0m"
+  
   IRB.conf[:PROMPT][:CUSTOM] = {
     # Flag  Description
     # %N    Current command.
@@ -9,11 +13,11 @@ def setup_custom_irb_prompt(name)
     # %nn   Current line number (n used as with the indent level).
     # %%    A literal percent sign.
 
-    :PROMPT_I => "\e[32m#{name}> \e[0m",                      # standard prompt
-    :PROMPT_C => "\e[32m#{' ' * name.size}> \e[0m",           # multi-line statment prompt
-    :PROMPT_S => "\e[32m#{' ' * (name.size - 1)}%l> \e[0m",   # multi-line string prompt
+    :PROMPT_I => "#{green}#{name}> #{clear}",                      # standard prompt
+    :PROMPT_C => "#{green}#{' ' * name.size}> #{clear}",           # multi-line statment prompt
+    :PROMPT_S => "#{green}#{' ' * (name.size - 1)}%l> #{clear}",   # multi-line string prompt
 
-    :RETURN => "\e[31m#{' ' * (name.size - 1)}=> %s\e[0m\n",  # return value formatting, see table below
+    :RETURN => "#{red}#{' ' * (name.size - 1)}=> %s#{clear}\n",  # return value formatting, see table below
   }
   IRB.conf[:PROMPT_MODE] = :CUSTOM
 end
