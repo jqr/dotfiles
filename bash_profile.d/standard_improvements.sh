@@ -13,3 +13,11 @@ touch() {
 myip() {
   curl --silent 'www.whatismyip.com/automation/n09230945.asp' && echo
 }
+
+
+_ssh_hosts() {
+  grep "Host " ~/.ssh/config | sed -e "s/Host //g"
+  # http://news.ycombinator.com/item?id=751220
+  cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["
+}
+complete -W "$(_ssh_hosts)" ssh
