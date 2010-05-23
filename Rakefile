@@ -32,11 +32,12 @@ task :install do
 
     contents = File.read("#{home}/.#{file}")
 
+    puts "Insert content into #{home}/.#{file}"
     output = 
       if contents =~ matcher
         contents.sub(matcher, insert)
       else
-        puts "WARNING: inserted content into #{file} since there was no existing region, you should verify the contents."
+        puts "WARNING: This is the first time editing #{home}/.#{file} automatically, you should verify the contents."
         insert + "\n" + contents
       end
     
