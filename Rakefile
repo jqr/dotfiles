@@ -1,5 +1,8 @@
 require 'pathname'
 
+LINK_FILES = %w(irbrc irbrc.d railsrc railsrc.d bash_profile bash_profile.d editrc inputrc ackrc)
+INSERT_FILES = %w(gemrc)
+
 def stop_error(message)
   puts "ERROR: #{message}"
   exit(1)
@@ -20,11 +23,11 @@ task :install do
   home = ENV['HOME']
   pwd = File.dirname(__FILE__)
 
-  %w(irbrc irbrc.d railsrc railsrc.d bash_profile bash_profile.d editrc inputrc ackrc).each do |file|
+  LINK_FILES.each do |file|
     symlink("#{pwd}/#{file}", "#{home}/.#{file}")
   end
   
-  %w(gemrc).each do |file|
+  INSERT_FILES.each do |file|
     insert = File.read("#{pwd}/#{file}").strip
     lines = insert.split("\n")
 
