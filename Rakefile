@@ -24,7 +24,7 @@ task :install do
     symlink("#{pwd}/#{file}", "#{home}/.#{file}")
   end
   
-  %w().each do |file|
+  %w(gemrc).each do |file|
     insert = File.read("#{pwd}/#{file}").strip
     lines = insert.split("\n")
 
