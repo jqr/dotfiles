@@ -1,3 +1,5 @@
+require 'pathname'
+
 def stop_error(message)
   puts "ERROR: #{message}"
   exit(1)
@@ -5,14 +7,12 @@ end
 
 def symlink(target, link)
   puts "Linking #{link} => #{target}"
-  if File.symlink?(link)
-    puts "  * deleting existing symlink #{link}"
-    File.unlink(link)
-  elsif File.exist?(link)
+  if File.exist?(link) && Pathname.new(link).realpath.to_s != target
     stop_error("File exists: #{link}")
+  elsif !File.exist?(link)
+    File.symlink(target, link)
+    puts
   end
-  File.symlink(target, link)
-  puts
 end
 
 desc "Install all dotfiles"
