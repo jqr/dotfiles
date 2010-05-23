@@ -23,4 +23,25 @@ task :install do
   %w(irbrc irbrc.d railsrc railsrc.d bash_profile bash_profile.d editrc inputrc ackrc).each do |file|
     symlink("#{pwd}/#{file}", "#{home}/.#{file}")
   end
+  
+  %w().each do |file|
+    insert = File.read("#{pwd}/#{file}").strip
+    lines = insert.split("\n")
+
+    matcher = Regexp.new(Regexp.escape(lines.first) + '.*?' + Regexp.escape(lines.last), Regexp::MULTILINE)
+
+    contents = File.read("#{home}/.#{file}")
+
+    output = 
+      if contents =~ matcher
+        contents.sub(matcher, insert)
+      else
+        puts "WARNING: inserted content into #{file} since there was no existing region, you should verify the contents."
+        insert + "\n" + contents
+      end
+    
+    File.open("#{home}/.#{file}", 'w') do |f|
+      f.write(output)
+    end
+  end
 end
