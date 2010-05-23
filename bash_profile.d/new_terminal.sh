@@ -1,6 +1,6 @@
 # http://gist.github.com/124422
 
-function nt {
+nt() {
   terminal_clone_command="
 tell application \"Terminal\"
 tell application \"System Events\" to tell process \"Terminal\" to keystroke \"t\" using command down

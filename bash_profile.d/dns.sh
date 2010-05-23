@@ -1,5 +1,5 @@
 # http://gist.github.com/217660
-function dns {
+dns() {
   dig soa $1 | grep -q ^$1 && 
   echo "Registered" || 
   echo "Available"

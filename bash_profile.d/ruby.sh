@@ -1,6 +1,6 @@
 # Inspiration from http://github.com/hashrocket/dotmatrix/blob/master/.hashrc
 
-function rails_root {
+rails_root() {
   (
     dir=${1:-$(pwd)}
     i=0
@@ -18,7 +18,7 @@ function rails_root {
 }
 
 
-function script_rails {
+script_rails() {
   rails_root=`rails_root`
   if [ -f "$rails_root/script/rails" ]; then
     "$rails_root/script/rails" "$@"

@@ -1,7 +1,7 @@
 alias mkdir='mkdir -p'
 alias recent='ls -lAt | head'
 
-function touch {
+touch() {
   dir=`expr "$1" : '\(.*\/\)'`
   if [ $dir ] 
     then
@@ -10,6 +10,6 @@ function touch {
   /usr/bin/touch $1
 }
 
-function myip {
+myip() {
   curl --silent 'www.whatismyip.com/automation/n09230945.asp' && echo
 }
