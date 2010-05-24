@@ -6,6 +6,6 @@ end
 
 require_rb_files_from(File.join(ENV['HOME'], '.irbrc.d'))
 
-if defined?(Rails)
+if defined?(Rails) || ENV['RAILS_ENV']
   load File.join(ENV['HOME'], '.railsrc')
 end
