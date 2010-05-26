@@ -46,3 +46,7 @@ grb() {
 current_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
 }
+
+git_commits_ahead() {
+  git status 2> /dev/null | grep ahead | sed -E 's/.*by ([0-9]+) commit\./(\1)/'
+}
