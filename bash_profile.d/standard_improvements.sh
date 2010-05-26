@@ -16,7 +16,7 @@ myip() {
 
 
 _ssh_hosts() {
-  grep "Host " ~/.ssh/config | sed -e "s/Host //g"
+  grep "Host " ~/.ssh/config 2> /dev/null | sed -e "s/Host //g"
   # http://news.ycombinator.com/item?id=751220
   cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["
 }
