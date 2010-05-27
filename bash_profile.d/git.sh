@@ -66,7 +66,7 @@ git_modifications() {
   wrap_unless_empty "`git_commits_ahead`" "`git_dirty_state`"
 }
 wrap_unless_empty() {
-  if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ]; then
+  if [ -n "$1" ] || [ -n "$2" ] || [ -n "$3" ] || [ -n "$4" ]; then
     echo -n "($1$2$3$4)"
   fi
 }
