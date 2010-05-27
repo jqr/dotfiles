@@ -48,5 +48,25 @@ current_git_branch() {
 }
 
 git_commits_ahead() {
-  git status 2> /dev/null | grep ahead | sed -E 's/.*by ([0-9]+) commit\./(\1)/'
+  git status 2> /dev/null | grep ahead | sed -E 's/.*by ([0-9]+) commits?\./\1/'
+}
+
+# Roughly from git_completion
+git_dirty_state() {
+  local w
+  w=''
+  git diff --no-ext-diff --quiet --exit-code || w="+"
+  if git rev-parse --quiet --verify HEAD >/dev/null; then
+    git diff-index --cached --quiet HEAD -- || w="+"
+  fi
+  echo -n $w
+}
+
+git_modifications() {
+  wrap_unless_empty "`git_commits_ahead`" "`git_dirty_state`"
+}
+wrap_unless_empty() {
+  if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ]; then
+    echo -n "($1$2$3$4)"
+  fi
 }
