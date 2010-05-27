@@ -55,9 +55,12 @@ git_commits_ahead() {
 git_dirty_state() {
   local w
   w=''
-  git diff --no-ext-diff --quiet --exit-code || w="+"
-  if git rev-parse --quiet --verify HEAD >/dev/null; then
-    git diff-index --cached --quiet HEAD -- || w="+"
+  local g="$(__gitdir)"
+  if [ -n "$g" ]; then
+    git diff --no-ext-diff --quiet --exit-code || w="+"
+    if git rev-parse --quiet --verify HEAD >/dev/null; then
+      git diff-index --cached --quiet HEAD -- || w="+"
+    fi
   fi
   echo -n $w
 }
