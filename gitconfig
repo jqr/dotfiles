@@ -1,0 +1,6 @@
+# START GENERATED
+[core]
+  excludesfile = ~/.gitignore
+[color]
+  ui = true
+# END GENERATED
