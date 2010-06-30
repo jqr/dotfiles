@@ -13,7 +13,7 @@ def setup_custom_irb_prompt(name)
     # %nn   Current line number (n used as with the indent level).
     # %%    A literal percent sign.
 
-    :PROMPT_I => "#{green}#{name}> #{clear}",                      # standard prompt
+    :PROMPT_I => "#{name}> ",                                      # standard prompt
     :PROMPT_C => "#{green}#{' ' * name.size}> #{clear}",           # multi-line statment prompt
     :PROMPT_S => "#{green}#{' ' * (name.size - 1)}%l> #{clear}",   # multi-line string prompt
 
