@@ -14,8 +14,8 @@ def setup_custom_irb_prompt(name)
     # %%    A literal percent sign.
 
     :PROMPT_I => "#{name}> ",                                      # standard prompt
-    :PROMPT_C => "#{green}#{' ' * name.size}> #{clear}",           # multi-line statment prompt
-    :PROMPT_S => "#{green}#{' ' * (name.size - 1)}%l> #{clear}",   # multi-line string prompt
+    :PROMPT_C => "#{' ' * name.size}> ",           # multi-line statment prompt
+    :PROMPT_S => "#{' ' * (name.size - 1)}%l> ",   # multi-line string prompt
 
     :RETURN => "#{red}#{' ' * (name.size - 1)}=> %s#{clear}\n",  # return value formatting, see table below
   }
