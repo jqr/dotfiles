@@ -1,5 +1,6 @@
 alias mkdir='mkdir -p'
 alias recent='ls -lAt | head'
+alias old='ls -lAt | tail'
 
 touch() {
   dir=`expr "$1" : '\(.*\/\)'`
