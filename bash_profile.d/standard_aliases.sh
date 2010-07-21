@@ -8,6 +8,7 @@ alias la='ls -la'
 alias du='du -hc'
 alias more='less'
 
+alias lc='wc -l'
 
 export CLICOLOR=1
 export LSCOLORS=gxgxcxdxbxegedabagacad
