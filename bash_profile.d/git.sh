@@ -18,7 +18,7 @@ alias gca='gc -a'
 alias gco="git checkout"
 
 alias gp='git pull --rebase || (notify "pull failed" "Git" && false)'
-alias gu='git push origin `current_git_branch`'
+alias gu='git push origin HEAD'
 alias gpru='gp && rake && gu'
 alias gri='git rebase -i origin/master^'
 alias grc='git rebase --continue'
@@ -38,7 +38,7 @@ ggc() {
 }
 
 grb() {
-  git push origin `current_git_branch`:refs/heads/$1
+  git push origin HEAD:refs/heads/$1
   git fetch origin &&
   git checkout -b $1 --track origin/$1
 }
