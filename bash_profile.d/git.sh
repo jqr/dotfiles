@@ -1,4 +1,4 @@
-alias gi='git init; printf ".DS_Store\nThumbs.db\n" >> .gitignore'
+alias gi='git init && printf ".DS_Store\nThumbs.db\n" >> .gitignore && git add .gitignore'
 
 
 # http://www.jukie.net/~bart/blog/pimping-out-git-log
