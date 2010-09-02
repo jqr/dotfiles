@@ -18,7 +18,6 @@ alias gca='gc -a'
 alias gco="git checkout"
 
 alias gp='git pull --rebase || (notify "pull failed" "Git" && false)'
-alias gpp='notify "gpp has been removed, you should use gp, and then gu" "Git" && false'
 alias gu='git push origin HEAD || (notify "push failed" "Git" && false)'
 alias gpru='gp && rake && gu'
 alias gri='git rebase -i origin/master^'
