@@ -6,7 +6,7 @@ end
 
 def sql_bench(query, runs = 10)
   puts
-  pp sql("EXPLAIN #{query}").first
+  puts sql("EXPLAIN ANALYZE VERBOSE #{query}").map(&:values).flatten.join("\n")
   puts
   puts "#{runs} runs in"
   runs_time = Benchmark.realtime { runs.times { sql(query) } }
