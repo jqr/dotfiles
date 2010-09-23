@@ -1,0 +1,7 @@
+AwesomePrint.defaults = {
+  :indent => -2,
+  :color => {
+    :hash  => :pale,
+    :class => :white
+  }
+}
