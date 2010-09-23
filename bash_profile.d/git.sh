@@ -1,3 +1,5 @@
+alias g='git'
+
 alias gi='git init && printf ".DS_Store\nThumbs.db\n" >> .gitignore && git add .gitignore'
 
 
