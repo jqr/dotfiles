@@ -18,6 +18,7 @@ alias gc='git commit -v'
 alias gca='gc -a'
 
 alias gco="git checkout"
+alias gcop="git checkout -p"
 
 alias gp='git pull --rebase || (notify "pull failed" "Git" && false)'
 alias gu='git push origin HEAD || (notify "push failed" "Git" && false)'
