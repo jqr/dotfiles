@@ -57,14 +57,8 @@ git_commits_ahead() {
 
 # Roughly from git_completion
 git_dirty_state() {
-  local w
-  w=''
-  local g="$(__gitdir)"
-  if [ -n "$g" ]; then
-    git diff --no-ext-diff --quiet --exit-code || w="+"
-    if git rev-parse --quiet --verify HEAD >/dev/null; then
-      git diff-index --cached --quiet HEAD -- || w="+"
-    fi
+  if [ -n "`git status --porcelain`" ]; then
+    echo -n "+"
   fi
   echo -n $w
 }
