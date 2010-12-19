@@ -47,8 +47,28 @@ grb() {
   git checkout -b $1 --track origin/$1
 }
 
+git_mode() {
+  # https://github.com/hashrocket/dotmatrix/commit/d888bfee55ca430ba109e011d8b0958e810f799a
+  local git_dir="$(git rev-parse --git-dir 2>/dev/null)"
+  local git_mode
+  if [ -f "$git_dir/BISECT_LOG" ] ; then
+    git_mode='BISECTING'
+  elif [ -f "$git_dir/rebase-merge/interactive" ] ; then
+    git_mode='REBASE-i'
+  elif [ -f "$git_dir/rebase-apply/rebasing" ] ; then
+    git_mode='REBASE'
+  elif [ -f "$git_dir/MERGE_HEAD" ] ; then
+    git_mode='MERGING'
+  fi
+  echo -n $git_mode
+}
 current_git_branch() {
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+  local git_dir="$(git rev-parse --git-dir 2>/dev/null)"
+  local git_branch
+
+  git_branch=`git symbolic-ref HEAD 2>/dev/null || git describe --exact-match HEAD 2>/dev/null | cut -c1-7 "$git_dir/HEAD"`
+  git_branch=${git_branch#refs/heads/}
+  echo -n $git_branch
 }
 
 git_commits_ahead() {
@@ -60,11 +80,10 @@ git_dirty_state() {
   if [ -n "`git status --porcelain`" ]; then
     echo -n "+"
   fi
-  echo -n $w
 }
 
-git_modifications() {
-  wrap_unless_empty "`git_commits_ahead`" "`git_dirty_state`"
+git_special() {
+  wrap_unless_empty "`git_mode`" "`git_commits_ahead`" "`git_dirty_state`"
 }
 wrap_unless_empty() {
   if [ -n "$1" ] || [ -n "$2" ] || [ -n "$3" ] || [ -n "$4" ]; then
