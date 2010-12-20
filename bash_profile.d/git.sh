@@ -35,7 +35,7 @@ alias gitx='gitx --all'
 ggc() {
   set -- `du -ks`
   before=$1
-  git reflog expire --expire=1.minute refs/heads/master && git fsck --unreachable && git prune && git gc 
+  git reflog expire --expire=1.minute refs/heads/master && git fsck --unreachable && git prune && git gc
   set -- `du -ks`
   after=$1
   echo "Cleaned up $((before-after)) kb."
@@ -65,8 +65,9 @@ git_mode() {
 current_git_branch() {
   local git_dir="$(git rev-parse --git-dir 2>/dev/null)"
   local git_branch
-
-  git_branch=`git symbolic-ref HEAD 2>/dev/null || git describe --exact-match HEAD 2>/dev/null | cut -c1-7 "$git_dir/HEAD"`
+  if [ -f "$git_dir" ]; then
+    git_branch=`git symbolic-ref HEAD 2>/dev/null || git describe --exact-match HEAD 2>/dev/null | cut -c1-7 "$git_dir/HEAD"`
+  fi
   git_branch=${git_branch#refs/heads/}
   echo -n $git_branch
 }
@@ -77,7 +78,7 @@ git_commits_ahead() {
 
 # Roughly from git_completion
 git_dirty_state() {
-  if [ -n "`git status --porcelain`" ]; then
+  if [ -n "`git status --porcelain 2>/dev/null`" ]; then
     echo -n "+"
   fi
 }
