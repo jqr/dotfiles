@@ -65,11 +65,11 @@ git_mode() {
 current_git_branch() {
   local git_dir="$(git rev-parse --git-dir 2>/dev/null)"
   local git_branch
-  if [ -f "$git_dir" ]; then
+  if [ -d "$git_dir" ]; then
     git_branch=`git symbolic-ref HEAD 2>/dev/null || git describe --exact-match HEAD 2>/dev/null | cut -c1-7 "$git_dir/HEAD"`
+    git_branch=${git_branch#refs/heads/}
+    echo -n $git_branch
   fi
-  git_branch=${git_branch#refs/heads/}
-  echo -n $git_branch
 }
 
 git_commits_ahead() {
