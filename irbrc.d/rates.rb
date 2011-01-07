@@ -28,7 +28,7 @@ def rate(options = {})
         "%.3f hours" % (-last_value.to_f / rate / 60 / 60)
       end
     
-    puts "%10i (%.3f/sec) #{time_to_zero}" % [last_value, rate]
+    puts "%15s (%s/sec) #{time_to_zero}" % [rate_delimiter(last_value), rate_delimiter("%.3f" % rate)]
     puts unless options[:clear]
     sleep options[:delay]
   end
@@ -64,9 +64,15 @@ def rates(options = {})
           "%.3f hours" % (-last_value.to_f / rate / 60 / 60)
         end
 
-      puts "%20s: %9i (%.3f/sec) #{time_to_zero}" % [key, last_value, rate]
+      puts "%20s: %15s (%s/sec) #{time_to_zero}" % [key, rate_delimiter(last_value), rate_delimiter("%.3f" % rate)]
     end
     puts unless options[:clear]
     sleep options[:delay]
   end
+end
+
+def rate_delimiter(number, delimiter = ',', separator = '.')
+  parts = number.to_s.split('.')
+  parts[0].gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1#{delimiter}")
+  parts.join(separator)
 end
