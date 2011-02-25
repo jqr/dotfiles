@@ -14,6 +14,9 @@ alias gds='git diff --cached'
 complete -o default -o nospace -F _git_diff gds
 alias gdh='git diff HEAD'
 
+alias gda='git diff `git merge-base HEAD $1`'
+alias gdam='gda master'
+
 alias ga='git add'
 complete -o default -o nospace -F _git_add ga
 alias gap='git add -p'
