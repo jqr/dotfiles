@@ -6,6 +6,7 @@ alias gi='git init && printf ".DS_Store\nThumbs.db\n" >> .gitignore && git add .
 # http://www.jukie.net/~bart/blog/pimping-out-git-log
 alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%an %cr)%Creset' --abbrev-commit --date=relative"
 alias glp='gl -p'
+alias glm="git master..."
 
 alias gs='git status'
 alias gd='git diff'
@@ -14,8 +15,7 @@ alias gds='git diff --cached'
 complete -o default -o nospace -F _git_diff gds
 alias gdh='git diff HEAD'
 
-alias gda='git diff `git merge-base HEAD $1`'
-alias gdam='gda master'
+alias gdm='gda master...'
 
 alias ga='git add'
 complete -o default -o nospace -F _git_add ga
