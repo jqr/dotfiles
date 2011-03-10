@@ -39,6 +39,9 @@ alias gb='git branch'
 complete -o default -o nospace -F _git_branch gb
 alias gbr='git branch -r'
 alias gba='git branch -a'
+alias gbdm='git branch --merged | grep -v "*" | xargs -n 1 git branch -d'
+
+alias grpo='git remote prune origin'
 
 alias gitx='gitx --all'
 
