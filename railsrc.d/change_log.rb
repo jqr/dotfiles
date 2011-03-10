@@ -1,16 +1,18 @@
 # From http://github.com/ryanb/dotfiles/tree/master/railsrc
+require 'active_record'
 
-def change_log(stream)
+def active_record_log(stream)
   ActiveRecord::Base.logger = Logger.new(stream)
-  ActiveRecord::Base.clear_active_connections!
+  ActiveRecord::Base.clear_all_connections!
+  nil
 end
- 
-def show_log
-  change_log(STDOUT)
-  puts "logs shown"
+
+def sql_on
+  active_record_log(STDOUT)
 end
- 
-def hide_log
-  change_log(nil)
-  puts "logs hidden"
+
+def sql_off
+  active_record_log(nil)
 end
+
+sql_on
