@@ -37,6 +37,7 @@ alias grc='git rebase --continue'
 
 alias gb='git branch'
 complete -o default -o nospace -F _git_branch gb
+alias gbr='git branch -r'
 alias gba='git branch -a'
 
 alias gitx='gitx --all'
