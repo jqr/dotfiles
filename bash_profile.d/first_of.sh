@@ -3,7 +3,9 @@
 #  EDITOR=`first_of "mate -w" "nano -w" vi`
 first_of() {
   if [ -n "$1" ]; then
-    command -v $1 >> /dev/null && echo $1 || first_of "$2" "$3" "$4" "$5"
+    local arg=$1
+    shift
+    command -v $arg >> /dev/null && echo $arg || first_of "$@"
   else
     exit 1
   fi
