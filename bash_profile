@@ -4,7 +4,7 @@ done
 
 export VISUAL=`first_of "mate -w" "nano -w" vi`
 export EDITOR=$VISUAL
-export GIT_EDITOR='first_of "mate -wl1" "nano -w" vi'
+export GIT_EDITOR=`first_of "mate -wl1" "nano -w" vi`
 
 export PATH=~/bin:~/.gem/ruby/1.8/bin:~/.seeds/bin:$PATH
 
