@@ -1,6 +1,6 @@
 alias g='git'
 
-alias gi='git init && printf ".DS_Store\nThumbs.db\n" >> .gitignore && git add .gitignore && git commit -v -e -m "Inital commit."'
+alias gi='git init && printf ".DS_Store\nThumbs.db\n" >> .gitignore && git add .gitignore && git commit -qm "Added standard .gitignore." && gl'
 
 
 # http://www.jukie.net/~bart/blog/pimping-out-git-log
