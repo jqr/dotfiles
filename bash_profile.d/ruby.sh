@@ -40,3 +40,5 @@ alias sdbc='script_rails dbconsole -p'
 alias r='rake'
 alias rs='rake spec'
 alias cwip='cucumber --tags @wip'
+
+alias be='bundle exec'
