@@ -55,9 +55,13 @@ ggc() {
 }
 
 grb() {
-  git push origin HEAD:refs/heads/$1
-  git fetch origin &&
-  git checkout -b $1 --track origin/$1
+  if [ -n "$1" ]; then
+    git push origin HEAD:refs/heads/$1
+    git fetch origin &&
+    git checkout -b $1 --track origin/$1
+  else
+    git branch --set-upstream `current_git_branch` origin/`current_git_branch`
+  fi
 }
 
 git_mode() {
