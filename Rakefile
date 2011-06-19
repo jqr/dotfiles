@@ -49,3 +49,5 @@ task :install do
     end
   end
 end
+
+task :default => :install
