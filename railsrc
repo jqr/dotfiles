@@ -6,6 +6,8 @@ def detect_rails_root
   end
 end
 
-DETECTED_RAILS_ROOT = detect_rails_root
+if detect_rails_root
+  DETECTED_RAILS_ROOT = detect_rails_root
+end
 
 require_rb_files_from(File.join(ENV['HOME'], '.railsrc.d'))
