@@ -1,5 +1,5 @@
 def setup_rails_irb_prompt
-  dangerous_envs = %w(production)
+  dangerous_envs = %w(production smoke)
   rails_env = ENV['RAILS_ENV']
   rails_env = rails_env.upcase if dangerous_envs.include?(rails_env)
 
