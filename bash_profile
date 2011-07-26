@@ -8,4 +8,6 @@ export GIT_EDITOR=`first_of "mate -wl1" "nano -w" vi`
 
 export PATH=~/bin:~/.gem/ruby/1.8/bin:~/.seeds/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
+ulimit -n 10240
+
 if [[ -s ~/.rvm/scripts/rvm ]] ; then source ~/.rvm/scripts/rvm ; fi
