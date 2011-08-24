@@ -15,4 +15,4 @@ def sql_off
   active_record_log(nil)
 end
 
-sql_on
+# sql_on
