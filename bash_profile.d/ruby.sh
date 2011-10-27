@@ -42,6 +42,8 @@ alias rs='rake spec'
 alias cwip='cucumber --tags @wip'
 
 alias be='bundle exec'
+alias bi='bundle install'
+alias bu='bundle update'
 
 
 # decent REE config for faster local development
