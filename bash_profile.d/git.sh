@@ -6,6 +6,7 @@ alias gi='git init && printf ".DS_Store\nThumbs.db\n" >> .gitignore && git add .
 # http://www.jukie.net/~bart/blog/pimping-out-git-log
 alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%an %cr)%Creset' --abbrev-commit --date=relative"
 alias glp='gl -p'
+alias glb='gl --branches'
 alias glm="gl master..."
 
 alias gs='git status'
