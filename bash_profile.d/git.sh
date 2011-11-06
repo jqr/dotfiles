@@ -39,11 +39,15 @@ alias grc='git rebase --continue'
 alias gb='git branch -v'
 complete -o default -o nospace -F _git_branch gb
 alias gbu='git branch -v --no-merged'
+alias gbum='git branch -v --no-merged master'
 
 alias gbr='git branch -v -r'
 alias gbru='git branch -v -r --no-merged'
+alias gbrum='git branch -v -r --no-merged master'
 alias gba='git branch -v -a'
 alias gbau='git branch -v -a --no-merged'
+alias gbaum='git branch -v -a --no-merged master'
+
 alias gbdm='git branch --merged | grep -v "*" | xargs -n 1 git branch -d'
 
 alias grpo='git remote prune origin'
