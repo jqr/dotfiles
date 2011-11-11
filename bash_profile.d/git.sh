@@ -9,7 +9,10 @@ alias glp='gl -p'
 alias glb='gl --branches'
 alias glm="gl master..."
 
-alias gs='git status'
+alias g{='git stash -u'
+alias g}='git stash pop'
+
+alias gs='git status; git stash list'
 alias gd='git diff'
 complete -o default -o nospace -F _git_diff gd
 alias gds='git diff --cached'
