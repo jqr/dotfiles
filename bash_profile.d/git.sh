@@ -12,7 +12,7 @@ alias glm="gl master..."
 alias g{='git stash -u'
 alias g}='git stash pop'
 
-alias gs='git status; git stash list'
+alias gs='git status -sb; git stash list'
 alias gd='git diff'
 complete -o default -o nospace -F _git_diff gd
 alias gds='git diff --cached'
