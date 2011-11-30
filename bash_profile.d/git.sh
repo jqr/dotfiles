@@ -34,14 +34,14 @@ complete -o default -o nospace -F _git_checkout gco
 alias gcop="git checkout -p"
 
 gp() {
-  local before=`git show --format=%H` &&
-  git pull --rebase || (notify "pull failed" "Git" && false) &&
-  local after=`git show --format=%H`
-  local exit_code=$?
-  if [ "$before" != "$after" ]; then
-    gl $before..HEAD
-  fi
-  return $exit_code
+  # local before=`git show --format=%H` &&
+  git pull --rebase || (notify "pull failed" "Git" && false)
+  # local after=`git show --format=%H`
+  # local exit_code=$?
+  # if [ "$before" != "$after" ]; then
+  #   gl $before..HEAD
+  # fi
+  # return $exit_code
 }
 
 alias gu='git push origin HEAD || (notify "push failed" "Git" && false)'
