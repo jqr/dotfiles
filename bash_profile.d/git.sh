@@ -33,7 +33,17 @@ alias gco="git checkout"
 complete -o default -o nospace -F _git_checkout gco
 alias gcop="git checkout -p"
 
-alias gp='git pull --rebase || (notify "pull failed" "Git" && false)'
+gp() {
+  before=`git show --format=%H` &&
+  git pull --rebase || (notify "pull failed" "Git" && false) &&
+  after=`git show --format=%H`
+  exit_code=$?
+  if [ "$before" != "$after" ]; then
+    gl $before..HEAD
+  fi
+  return $exit_code
+}
+
 alias gu='git push origin HEAD || (notify "push failed" "Git" && false)'
 alias gpru='gp && rake && gu'
 alias gri='git rebase -i origin/master^'
