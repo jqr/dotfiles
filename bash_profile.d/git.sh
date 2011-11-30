@@ -112,18 +112,22 @@ current_git_branch() {
 }
 
 git_commits_ahead() {
-  git status 2> /dev/null | grep ahead | sed -e 's/.*by \([0-9]\{1,\}\) commits\{0,1\}\./\1/'
+  git status -sb 2> /dev/null | grep ahead | sed -e 's/.*ahead \([0-9]\{1,\}\).*/+\1/'
+}
+
+git_commits_behind() {
+  git status -sb 2> /dev/null | grep behind | sed -e 's/.*behind \([0-9]\{1,\}\).*/-\1/'
 }
 
 # Roughly from git_completion
 git_dirty_state() {
   if [ -n "`git status --porcelain 2>/dev/null`" ]; then
-    echo -n "+"
+    echo -n "*"
   fi
 }
 
 git_special() {
-  wrap_unless_empty "`git_mode`" "`git_commits_ahead`" "`git_dirty_state`"
+  wrap_unless_empty "`git_mode`" "`git_commits_ahead`" "`git_commits_behind`" "`git_dirty_state`"
 }
 wrap_unless_empty() {
   if [ -n "$1" ] || [ -n "$2" ] || [ -n "$3" ] || [ -n "$4" ]; then
