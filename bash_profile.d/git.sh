@@ -34,10 +34,10 @@ complete -o default -o nospace -F _git_checkout gco
 alias gcop="git checkout -p"
 
 gp() {
-  before=`git show --format=%H` &&
+  local before=`git show --format=%H` &&
   git pull --rebase || (notify "pull failed" "Git" && false) &&
-  after=`git show --format=%H`
-  exit_code=$?
+  local after=`git show --format=%H`
+  local exit_code=$?
   if [ "$before" != "$after" ]; then
     gl $before..HEAD
   fi
@@ -69,10 +69,10 @@ alias gitx='gitx --all'
 
 ggc() {
   set -- `du -ks`
-  before=$1
+  local before=$1
   git reflog expire --expire=1.minute refs/heads/master && git fsck --unreachable && git prune && git gc
   set -- `du -ks`
-  after=$1
+  local after=$1
   echo "Cleaned up $((before-after)) kb."
 }
 
