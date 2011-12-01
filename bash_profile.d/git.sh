@@ -45,7 +45,6 @@ gp() {
 }
 
 alias gu='git push origin HEAD || (notify "push failed" "Git" && false)'
-alias gpru='gp && rake && gu'
 alias gri='git rebase -i origin/master^'
 alias grc='git rebase --continue'
 
