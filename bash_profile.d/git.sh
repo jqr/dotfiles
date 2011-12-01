@@ -47,6 +47,8 @@ gp() {
 alias gu='git push origin HEAD || (notify "push failed" "Git" && false)'
 alias gri='git rebase -i origin/master^'
 alias grc='git rebase --continue'
+alias gf='git fetch'
+alias gfa='git fetch --all'
 
 alias gb='git branch -v'
 complete -o default -o nospace -F _git_branch gb
