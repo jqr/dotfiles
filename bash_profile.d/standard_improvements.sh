@@ -2,6 +2,7 @@ alias mkdir='mkdir -p'
 alias recent='ls -lAt | head'
 alias old='ls -lAt | tail'
 alias psg='ps aux | grep'
+alias ka='killall'
 
 touch() {
   dir=`expr "$1" : '\(.*\/\)'`
