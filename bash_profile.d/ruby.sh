@@ -39,6 +39,7 @@ alias ss='script_rails server'
 alias sr='script_rails runner'
 alias sdbc='script_rails dbconsole -p'
 
+alias rake='if [ -f "Gemfile" ]; then bundle exec rake; else rake; fi'
 alias r='rake'
 alias rs='rake spec'
 alias cwip='cucumber --tags @wip'
