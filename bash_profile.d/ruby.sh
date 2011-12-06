@@ -36,6 +36,7 @@ alias sc='script_rails console'
 alias sg='script_rails generate'
 alias sd='script_rails destroy'
 alias ss='script_rails server'
+alias sr='script_rails runner'
 alias sdbc='script_rails dbconsole -p'
 
 alias r='rake'
