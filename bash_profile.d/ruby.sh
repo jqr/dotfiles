@@ -32,6 +32,12 @@ script_rails() {
   fi
 }
 
+auto_bundle_exec() {
+  if [ -f "Gemfile" ]; then
+    echo "bundle exec"
+  fi
+}
+
 alias sc='script_rails console'
 alias sg='script_rails generate'
 alias sd='script_rails destroy'
@@ -39,7 +45,8 @@ alias ss='script_rails server'
 alias sr='script_rails runner'
 alias sdbc='script_rails dbconsole -p'
 
-alias rake='if [ -f "Gemfile" ]; then bundle exec rake; else rake; fi'
+alias rake='`auto_bundle_exec` rake'
+
 alias r='rake'
 alias rs='rake spec'
 alias cwip='cucumber --tags @wip'
