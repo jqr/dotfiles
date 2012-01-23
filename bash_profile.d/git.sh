@@ -63,6 +63,17 @@ alias gbau='git branch -v -a --no-merged'
 alias gbaum='git branch -v -a --no-merged master'
 
 alias gbdm='git branch --merged | grep -v "*" | xargs -n 1 git branch -d'
+gbrdm() {
+  git branch -r --merged | grep -v "origin/master"
+  echo
+  echo -n 'Delete listed branches from origin? (y/N) '
+  local yes_or_no
+  read yes_or_no
+  if [ "$yes_or_no" == "y" ]; then
+    git branch -r --merged | grep -v "origin/master" | sed -e 's/origin\//:/' | xargs -n 1 git push origin
+    git remote prune origin
+  fi
+}
 
 alias grpo='git remote prune origin'
 
