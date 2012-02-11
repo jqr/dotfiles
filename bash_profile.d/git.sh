@@ -33,6 +33,9 @@ alias gco="git checkout"
 complete -o default -o nospace -F _git_checkout gco
 alias gcop="git checkout -p"
 
+alias gr="git reset"
+alias grp="git reset -p"
+
 gp() {
   # local before=`git show --format=%H` &&
   git pull --rebase || (notify "pull failed" "Git" && false)
