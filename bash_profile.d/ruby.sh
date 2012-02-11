@@ -54,6 +54,7 @@ alias cwip='cucumber --tags @wip'
 alias be='bundle exec'
 alias bi='bundle install'
 alias bu='bundle update'
+alias bo='bundle outdated'
 
 
 # decent REE config for faster local development
