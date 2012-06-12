@@ -127,11 +127,11 @@ current_git_branch() {
 }
 
 git_commits_ahead() {
-  git status -sb 2> /dev/null | grep ahead | sed -e 's/.*ahead \([0-9]\{1,\}\).*/+\1/'
+  git status -sb 2> /dev/null | head -n 1 | grep ahead | sed -e 's/.*ahead \([0-9]\{1,\}\).*/+\1/'
 }
 
 git_commits_behind() {
-  git status -sb 2> /dev/null | grep behind | sed -e 's/.*behind \([0-9]\{1,\}\).*/-\1/'
+  git status -sb 2> /dev/null | head -n 1 | grep behind | sed -e 's/.*behind \([0-9]\{1,\}\).*/-\1/'
 }
 
 # Roughly from git_completion
