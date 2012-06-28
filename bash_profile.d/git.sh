@@ -9,7 +9,7 @@ alias glp='gl -p'
 alias glb='gl --branches'
 alias glm="gl master..."
 
-alias g{='echo -n "Name this stash (optional): "; read name; if [ -n $name ]; then git stash save -u $name; else git stash -u; fi'
+alias g{='echo -n "Name this stash (optional): "; read name; if [[ -n $name ]]; then git stash save -u "$name"; else git stash -u; fi'
 alias g}='git stash pop'
 
 alias gs='git status -sb && git stash list'
