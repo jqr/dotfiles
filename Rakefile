@@ -8,7 +8,9 @@ def stop_error(message)
   exit(1)
 end
 
-def symlink(target, link)
+def nice_symlink(target, link)
+  target = File.expand_path(target)
+  link   = File.expand_path(link)
   puts "Linking #{link} => #{target}"
   if File.exist?(link) && Pathname.new(link).realpath.to_s != target
     stop_error("File exists: #{link}")
@@ -24,9 +26,9 @@ task :install do
   pwd = File.dirname(__FILE__)
 
   LINK_FILES.each do |file|
-    symlink("#{pwd}/#{file}", "#{home}/.#{file}")
+    nice_symlink("#{pwd}/#{file}", "#{home}/.#{file}")
   end
-  
+
   INSERT_FILES.each do |file|
     insert = File.read("#{pwd}/#{file}").strip
     lines = insert.split("\n")
@@ -36,14 +38,14 @@ task :install do
     contents = File.exists?("#{home}/.#{file}") ? File.read("#{home}/.#{file}") : ''
 
     puts "Insert content into #{home}/.#{file}"
-    output = 
+    output =
       if contents =~ matcher
         contents.sub(matcher, insert)
       else
         puts "WARNING: This is the first time editing #{home}/.#{file} automatically, you should verify the contents."
         insert + "\n" + contents
       end
-    
+
     File.open("#{home}/.#{file}", 'w') do |f|
       f.write(output)
     end
