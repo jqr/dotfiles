@@ -6,8 +6,9 @@ alias gi='git init && printf ".DS_Store\nThumbs.db\n" >> .gitignore && git add .
 # http://www.jukie.net/~bart/blog/pimping-out-git-log
 alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%an %cr)%Creset' --abbrev-commit --date=relative"
 alias glp='gl -p'
+alias glpm="glp master.."
 alias glb='gl --branches'
-alias glm="gl master..."
+alias glm="gl master.."
 
 alias g{='echo -n "Name this stash (optional): "; read name; if [[ -n $name ]]; then git stash save -u "$name"; else git stash -u; fi'
 alias g}='git stash pop'
@@ -19,7 +20,7 @@ alias gds='git diff --cached'
 complete -o default -o nospace -F _git_diff gds
 alias gdh='git diff HEAD'
 
-alias gdm='gd master...'
+alias gdm='gd master..'
 
 alias ga='git add'
 complete -o default -o nospace -F _git_add ga
