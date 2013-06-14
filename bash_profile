@@ -1,4 +1,4 @@
-export PATH=./bin/:~/bin:/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin:$PATH
+export PATH=./bin:~/bin:/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin:$PATH
 
 for a in `ls $HOME/.bash_profile.d/*.sh`; do
   source $a
