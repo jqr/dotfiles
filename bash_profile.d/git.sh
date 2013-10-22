@@ -4,7 +4,8 @@ alias gi='git init && printf ".DS_Store\nThumbs.db\n" >> .gitignore && git add .
 
 
 # http://www.jukie.net/~bart/blog/pimping-out-git-log
-alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%an %cr)%Creset' --abbrev-commit --date=relative"
+alias gl="git log --graph --pretty=format:'%C(auto)%h -%d %s %Cgreen(%an %cr)%Creset' --abbrev-commit --date=relative --all"
+
 alias gld="git log --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short"
 alias glda="gld --author $1"
 alias glp='gl -p'
