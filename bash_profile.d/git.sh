@@ -26,6 +26,8 @@ alias gdm='gd master..'
 
 alias ga='git add'
 complete -o default -o nospace -F _git_add ga
+alias gaa='git add --all'
+complete -o default -o nospace -F _git_add gaa
 alias gap='git add -p'
 alias gc='git commit -v'
 complete -o default -o nospace -F _git_commit gc
