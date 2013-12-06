@@ -1,4 +1,6 @@
-export PATH=./bin:~/bin:/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin:$PATH
+export PATH=~/bin::$HOME/.rbenv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin:$PATH
+eval "$(rbenv init -)"
+export PATH="./bin:$PATH"
 
 for a in `ls $HOME/.bash_profile.d/*.sh`; do
   source $a
@@ -12,4 +14,3 @@ ulimit -n 10240
 
 if [[ -s ~/.rvm/scripts/rvm ]] ; then source ~/.rvm/scripts/rvm ; fi
 
-# eval "$(rbenv init -)"
