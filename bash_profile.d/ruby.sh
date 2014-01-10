@@ -57,8 +57,8 @@ alias bu='bundle update'
 alias bo='bundle outdated'
 
 
-# decent REE config for faster local development
-export RUBY_HEAP_MIN_SLOTS=800000
+# decent Ruby options for faster local development
+export RUBY_GC_HEAP_INIT_SLOTS=800000
 export RUBY_HEAP_FREE_MIN=100000
 export RUBY_HEAP_SLOTS_INCREMENT=300000
 export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1
