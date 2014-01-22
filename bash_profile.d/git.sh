@@ -36,6 +36,10 @@ complete -o default -o nospace -F _git_add gca
 
 alias gco="git checkout"
 complete -o default -o nospace -F _git_checkout gco
+gcob() {
+  git checkout `echo $1 | sed 's|origin/||'`
+}
+complete -o default -o nospace -F _git_checkout gcob
 alias gcop="git checkout -p"
 
 alias gr="git reset"
