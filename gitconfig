@@ -1,6 +1,10 @@
 # START GENERATED
 [core]
   excludesfile = ~/.gitignore
+[branch]
+  autosetuprebase = always
+[push]
+  default = simple
 [color]
   ui = true
 # END GENERATED
