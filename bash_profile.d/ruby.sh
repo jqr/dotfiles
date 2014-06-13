@@ -20,7 +20,9 @@ rails_root() {
 
 script_rails() {
   rails_root=`rails_root`
-  if [ -f "$rails_root/script/rails" ]; then
+  if [ -f "$rails_root/bin/rails" ]; then
+    "$rails_root/bin/rails" "$@"
+  elif [ -f "$rails_root/script/rails" ]; then
     "$rails_root/script/rails" "$@"
   elif [ -f "$rails_root/script/$1" ]; then
     local name
