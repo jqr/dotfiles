@@ -78,7 +78,7 @@ alias gbaum='git branch -v -a --no-merged master'
 
 alias gbdm='git branch --merged | grep -v "*" | xargs -n 1 git branch -d'
 gbrdm() {
-  git branch -r --merged | grep -v "origin/master" || echo "Nothing to delete" && return
+  git branch -r --merged | grep -v "origin/master" || (echo "Nothing to delete" && return)
   echo
   echo -n 'Delete listed branches from origin? (y/N) '
   local yes_or_no
