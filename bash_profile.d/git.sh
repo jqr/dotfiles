@@ -76,7 +76,7 @@ alias gba='git branch -v -a'
 alias gbau='git branch -v -a --no-merged'
 alias gbaum='git branch -v -a --no-merged master'
 
-alias gbdm='git branch --merged | grep -v "*" | xargs -n 1 git branch -d'
+alias gbdm='git branch --merged | grep -v "*" |  grep -ve "^\s*master$" | xargs -n 1 git branch -d'
 gbrdm() {
   if git branch -r --merged | grep -v 'master$'; then
     echo
