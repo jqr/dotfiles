@@ -18,13 +18,13 @@ alias g}='git stash pop'
 alias g}b='git stash branch'
 
 alias gs='git status -sb && git stash list'
-alias gd='git diff'
-alias gds='git diff --cached --stat'
+alias gd='git diff -M'
+alias gds='gd --cached --stat'
 complete -o default -o nospace -F _git_diff gd
-alias gdh='git diff HEAD'
+alias gdh='gd HEAD'
 
 alias gdm='gd master...'
-alias gdms='git diff --stat master...'
+alias gdms='gd --stat master...'
 
 alias ga='git add'
 complete -o default -o nospace -F _git_add ga
