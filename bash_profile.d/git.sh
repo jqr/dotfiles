@@ -64,12 +64,14 @@ alias grc='git rebase --continue'
 alias gf='git fetch'
 alias gfa='git fetch --all'
 
-alias gb='git branch -v'
+alias git_columnize="column -t -s $'\t'"
+
+alias gb='git for-each-ref --sort=committerdate --format="%(refname:short)%09%(subject)" refs/heads/ | git_columnize'
 complete -o default -o nospace -F _git_branch gb
 alias gbu='git branch -v --no-merged'
 alias gbum='git branch -v --no-merged master'
 
-alias gbr='git branch -v -r'
+alias gbr='git for-each-ref --sort=committerdate --format="%(refname:short)%09%(subject)" refs/remotes/*/* | grep -ve "^tddium/" | git_columnize'
 alias gbru='git branch -v -r --no-merged'
 alias gbrum='git branch -v -r --no-merged master'
 alias gba='git branch -v -a'
