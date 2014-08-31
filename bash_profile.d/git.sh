@@ -2,14 +2,12 @@ alias g='git'
 
 alias gi='git init && printf ".DS_Store\nThumbs.db\n" >> .gitignore && git add .gitignore && git commit -qm "Added standard .gitignore." && gl'
 
-
-# http://www.jukie.net/~bart/blog/pimping-out-git-log
-alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%an %cr)%Creset' --abbrev-commit --date=relative"
+alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%an %cr)%Creset' --abbrev-commit --date=relative"
 alias gld="git log --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short"
 alias glda="gld --author $1"
 alias glp='gl -p'
 alias glpm="glp master.."
-alias glb='gl --branches'
+alias glg='gl --graph --branches'
 alias glm="gl master.."
 
 alias g{='echo -n "Name this stash (optional): "; read name; if [[ -n $name ]]; then git stash save -u "$name"; else git stash -u; fi'
