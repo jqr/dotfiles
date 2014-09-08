@@ -17,9 +17,10 @@ alias g}b='git stash branch'
 
 alias gs='git status -sb && git stash list'
 alias gd='git diff -M'
-alias gds='gd --cached --stat'
+alias gds='gd --stat'
 complete -o default -o nospace -F _git_diff gd
 alias gdh='gd HEAD'
+alias gdhs='gdh --stat'
 
 alias gdm='gd master...'
 alias gdms='gd --stat master...'
