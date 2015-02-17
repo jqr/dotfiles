@@ -87,8 +87,8 @@ gbrdm() {
     local yes_or_no
     read yes_or_no
     if [ "$yes_or_no" == "y" ]; then
-      git branch -r --merged | grep -v 'master$' | grep -ve "$(current_git_branch)\$" | grep "$upstream/" | sed -e "s/$upstream\\///" | xargs -n 100 git push origin --delete
-      git remote prune origin
+      git branch -r --merged | grep -v 'master$' | grep -ve "$(current_git_branch)\$" | grep "$upstream/" | sed -e "s/$upstream\\///" | xargs -n 100 git push $upstream --delete
+      git remote prune $upstream
     fi
   else
     echo "Nothing to delete"
