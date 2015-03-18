@@ -11,7 +11,7 @@ alias glg='gl --graph --branches'
 alias glm="gl master.."
 
 alias g{='echo -n "Name this stash (optional): "; read name; if [[ -n $name ]]; then git stash save -u "$name"; else git stash -u; fi'
-alias g{p='echo -n "Name this stash (optional): "; read name; if [[ -n $name ]]; then git stash save -p -u "$name"; else git stash -u; fi'
+alias g{p='echo -n "Name this stash (optional): "; read name; if [[ -n $name ]]; then git stash save -p -u "$name"; else git stash -p -u; fi'
 alias g}='git stash pop'
 alias g}b='git stash branch'
 
