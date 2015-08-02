@@ -11,6 +11,3 @@ export EDITOR=$VISUAL
 #export GIT_EDITOR=`first_of "mate -wl1" "nano -w" vi`
 
 ulimit -n 10240
-
-if [[ -s ~/.rvm/scripts/rvm ]] ; then source ~/.rvm/scripts/rvm ; fi
-
