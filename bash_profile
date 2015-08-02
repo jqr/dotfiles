@@ -1,9 +1,9 @@
-export PATH=~/bin:/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin:$PATH
+export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin:$PATH
 if which rbenv > /dev/null; then
   export RBENV_ROOT=/usr/local/var/rbenv
   eval "$(rbenv init -)"
 fi
-export PATH="./bin:$PATH"
+export PATH="./bin:~/bin:$PATH" # ensure this is always first
 
 if [[ -s ~/perl5/perlbrew/etc/bashrc ]]; then
   source ~/perl5/perlbrew/etc/bashrc
