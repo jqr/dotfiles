@@ -2,6 +2,10 @@ export PATH=~/bin::$HOME/.rbenv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/sh
 eval "$(rbenv init -)"
 export PATH="./bin:$PATH"
 
+if [[ -s ~/perl5/perlbrew/etc/bashrc ]]; then
+  source ~/perl5/perlbrew/etc/bashrc
+fi
+
 for a in `ls $HOME/.bash_profile.d/*.sh`; do
   source $a
 done
