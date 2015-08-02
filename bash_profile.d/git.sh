@@ -3,8 +3,14 @@ alias g='git'
 alias gi='git init && printf ".DS_Store\nThumbs.db\n" >> .gitignore && git add .gitignore && git commit -qm "Added standard .gitignore." && gl'
 
 alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%an %cr)%Creset' --abbrev-commit --date=relative"
-alias gld="git log --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short"
-alias glda="gld --author $1"
+
+# Git commits by date
+alias gcd="git rev-list --remotes --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short  | grep -v ^commit | less -R"
+# Git commits by date and author
+gcda() {
+  git rev-list --remotes --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short --author $1 | grep -v ^commit | less -R
+}
+
 alias glp='gl -p'
 alias glpm="glp master.."
 alias glg='gl --graph --branches'
