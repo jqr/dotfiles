@@ -4,6 +4,10 @@ alias old='ls -lAt | tail'
 alias psg='ps aux | grep'
 alias ka='killall'
 
+f() {
+  find . -name "*$1*"
+}
+
 touch() {
   dir=`expr "$1" : '\(.*\/\)'`
   if [ $dir ]
