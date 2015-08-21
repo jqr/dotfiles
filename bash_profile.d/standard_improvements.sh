@@ -6,7 +6,7 @@ alias ka='killall'
 
 touch() {
   dir=`expr "$1" : '\(.*\/\)'`
-  if [ $dir ] 
+  if [ $dir ]
     then
     mkdir -p $dir
   fi
