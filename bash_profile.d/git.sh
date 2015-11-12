@@ -41,12 +41,17 @@ complete -o default -o nospace -F _git_commit gc
 alias gca='gc -a'
 complete -o default -o nospace -F _git_add gca
 
-alias gco="git checkout"
-complete -o default -o nospace -F _git_checkout gco
-gcob() {
-  git checkout `echo $1 | sed 's|origin/||'`
+# Special case for gco origin/branch_name that makes a local branch of the
+# same name.
+gco() {
+  if [[ $1 == origin/* ]]; then
+    local local_branch=`echo $1 | sed 's|origin/||'`
+    git checkout $local_branch "${@:2}"
+  else
+    git checkout "$@"
+  fi
 }
-complete -o default -o nospace -F _git_checkout gcob
+complete -o default -o nospace -F _git_checkout gco
 alias gcop="git checkout -p"
 
 alias gr="git reset"
