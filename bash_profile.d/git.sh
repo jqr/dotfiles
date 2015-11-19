@@ -125,7 +125,9 @@ grb() {
     git fetch origin &&
     git checkout -b $1 --track origin/$1
   else
-    git branch --set-upstream-to `current_git_branch` origin/`current_git_branch`
+    git push origin HEAD:refs/heads/`current_git_branch` &&
+    git fetch origin
+    git branch --set-upstream-to origin/`current_git_branch`
   fi
 }
 
