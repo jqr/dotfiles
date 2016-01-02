@@ -1,4 +1,3 @@
-alias m="mate"
 alias s="subl"
 alias openports='sudo lsof -iTCP -sTCP:LISTEN -P'
 
