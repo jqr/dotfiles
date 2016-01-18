@@ -18,7 +18,7 @@ touch() {
 }
 
 myip() {
-  curl --silent 'http://automation.whatismyip.com/n09230945.asp' && echo
+  curl --silent --fail 'ifconfig.co'
 }
 
 
