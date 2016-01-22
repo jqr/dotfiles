@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+cd "$(dirname "$0")/.."
+
+hash shellcheck 2>/dev/null || { echo >&2 "shellcheck command required, aborting."; exit 1; }
+
+shellcheck -s bash bash_profile bash_profile.d/*.sh script/*
