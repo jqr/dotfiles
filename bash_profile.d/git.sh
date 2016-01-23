@@ -8,7 +8,7 @@ alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgree
 alias gcd="git rev-list --remotes --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short  | grep -v ^commit | less -R"
 # Git commits by date and author
 gcda() {
-  git rev-list --remotes --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short --author $1 | grep -v ^commit | less -R
+  git rev-list --remotes --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short --author "$1" | grep -v ^commit | less -R
 }
 
 alias glp='gl -p'
@@ -45,8 +45,9 @@ complete -o default -o nospace -F _git_add gca
 # same name.
 gco() {
   if [[ $1 == origin/* ]]; then
-    local local_branch=`echo $1 | sed 's|origin/||'`
-    git checkout $local_branch "${@:2}"
+    local local_branch
+    local_branch="$(echo "$1" | sed 's|origin/||')"
+    git checkout "$local_branch" "${@:2}"
   else
     git checkout "$@"
   fi
@@ -97,7 +98,7 @@ gbrdm() {
     echo
     echo -n "Delete listed branches from $upstream? (y/N) "
     local yes_or_no
-    read yes_or_no
+    read -r yes_or_no
     if [ "$yes_or_no" == "y" ]; then
       git branch -r --merged | grep -v 'master$' | grep -ve "$(current_git_branch)\$" | grep "$upstream/" | sed -e "s/$upstream\\///" | xargs -n 100 git push $upstream --delete
       git remote prune $upstream
@@ -112,29 +113,30 @@ alias grpo='git remote prune origin'
 alias gitx='gitx --all'
 
 ggc() {
-  set -- `du -ks`
-  local before=$1
+  set -- "$(du -ks)"
+  local before="$1"
   git reflog expire --expire=1.minute refs/heads/master && git fsck --unreachable && git prune && git gc
-  set -- `du -ks`
-  local after=$1
+  set -- "$(du -ks)"
+  local after="$1"
   echo "Cleaned up $((before-after)) kb."
 }
 
 grb() {
   if [ -n "$1" ]; then
-    git push origin HEAD:refs/heads/$1
+    git push origin "HEAD:refs/heads/$1"
     git fetch origin &&
-    git checkout -b $1 --track origin/$1
+    git checkout -b "$1" --track "origin/$1"
   else
-    git push origin HEAD:refs/heads/`current_git_branch` &&
+    git push origin "HEAD:refs/heads/$(current_git_branch)" &&
     git fetch origin
-    git branch --set-upstream-to origin/`current_git_branch`
+    git branch --set-upstream-to "origin/$(current_git_branch)"
   fi
 }
 
 git_mode() {
   # https://github.com/hashrocket/dotmatrix/commit/d888bfee55ca430ba109e011d8b0958e810f799a
-  local git_dir="$(git rev-parse --git-dir 2>/dev/null)"
+  local git_dir
+  git_dir="$(git rev-parse --git-dir 2>/dev/null)"
   local git_mode
   if [ -f "$git_dir/BISECT_LOG" ] ; then
     git_mode='BISECTING'
@@ -145,15 +147,16 @@ git_mode() {
   elif [ -f "$git_dir/MERGE_HEAD" ] ; then
     git_mode='MERGING'
   fi
-  echo -n $git_mode
+  echo -n "$git_mode"
 }
 current_git_branch() {
-  local git_dir="$(git rev-parse --git-dir 2>/dev/null)"
+  local git_dir
+  git_dir="$(git rev-parse --git-dir 2>/dev/null)"
   local git_branch
   if [ -d "$git_dir" ]; then
-    git_branch=`git symbolic-ref HEAD 2>/dev/null || git describe --exact-match HEAD 2>/dev/null | cut -c1-7 "$git_dir/HEAD"`
+    git_branch=$(git symbolic-ref HEAD 2>/dev/null || git describe --exact-match HEAD 2>/dev/null | cut -c1-7 "$git_dir/HEAD")
     git_branch=${git_branch#refs/heads/}
-    echo -n $git_branch
+    echo -n "$git_branch"
   fi
 }
 
@@ -167,13 +170,13 @@ git_commits_behind() {
 
 # Roughly from git_completion
 git_dirty_state() {
-  if [ -n "`git status --porcelain 2>/dev/null`" ]; then
+  if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
     echo -n "*"
   fi
 }
 
 git_special() {
-  wrap_unless_empty "`git_mode`" "`git_commits_ahead`" "`git_commits_behind`" "`git_dirty_state`"
+  wrap_unless_empty "$(git_mode)" "$(git_commits_ahead)" "$(git_commits_behind)" "$(git_dirty_state)"
 }
 wrap_unless_empty() {
   if [ -n "$1" ] || [ -n "$2" ] || [ -n "$3" ] || [ -n "$4" ]; then

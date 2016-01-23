@@ -2,15 +2,15 @@
 
 rails_root() {
   (
-    dir=${1:-$(pwd)}
+    dir="$(pwd)"
     i=0
-    while [ "/" != "$dir" -a "$i" -ne 16 ]; do
+    while [ "/" != "$dir" ] && [ "$i" -ne 16 ]; do
       if [ -f "$dir/config/environment.rb" ]; then
         echo "$dir"
         return 0
       fi
       dir="$(dirname "$dir")"
-      i=$(expr $i + 1)
+      ((i=i + 1))
     done
     echo "* Does not appear to be a Rails project" >&2
     return 1
@@ -19,7 +19,7 @@ rails_root() {
 
 
 script_rails() {
-  rails_root=`rails_root`
+  rails_root=$(rails_root)
   if [ -f "$rails_root/bin/rails" ]; then
     "$rails_root/bin/rails" "$@"
   elif [ -f "$rails_root/script/rails" ]; then

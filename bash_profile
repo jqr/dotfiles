@@ -9,11 +9,11 @@ if [[ -s ~/perl5/perlbrew/etc/bashrc ]]; then
   source ~/perl5/perlbrew/etc/bashrc
 fi
 
-for a in `ls $HOME/.bash_profile.d/*.sh`; do
-  source $a
+for file in "$HOME"/.bash_profile.d/*.sh; do
+  source "$file"
 done
 
-export VISUAL=`first_of "subl -w" "mate -w" "nano -w" vi`
+export VISUAL=$(first_of "subl -w" "mate -w" "nano -w" vi)
 export EDITOR=$VISUAL
 #export GIT_EDITOR=`first_of "mate -wl1" "nano -w" vi`
 

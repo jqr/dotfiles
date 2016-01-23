@@ -9,22 +9,23 @@ f() {
 }
 
 touch() {
-  dir=`expr "$1" : '\(.*\/\)'`
-  if [ $dir ]
+  dir=$(expr "$1" : '\(.*\/\)')
+  if [ "$dir" ]
     then
-    mkdir -p $dir
+    mkdir -p "$dir"
   fi
-  /usr/bin/touch $1
+  /usr/bin/touch "$1"
 }
 
 myip() {
   curl --silent --fail 'ifconfig.co'
 }
 
-
 _ssh_hosts() {
   grep "Host " ~/.ssh/config 2> /dev/null | sed -e "s/Host //g"
   # http://news.ycombinator.com/item?id=751220
-  cat ~/.ssh/known_hosts 2> /dev/null | cut -f 1 -d ' ' | sed -e s/,.*//g | uniq | grep -v "\["
+  if [ -f "$HOME/.ssh/known_hosts" ]; then
+    cut -f 1 -d ' ' < "$HOME/.ssh/known_hosts" | sed -e s/,.*//g | uniq | grep -v "\["
+  fi
 }
 complete -W "$(_ssh_hosts)" ssh
