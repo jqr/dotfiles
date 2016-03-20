@@ -26,6 +26,7 @@ alias gd='git diff -M'
 alias gds='gd --stat'
 complete -o default -o nospace -F _git_diff gd
 alias gdh='gd HEAD'
+alias gdo='gd origin/$(current_git_branch)'
 alias gdhs='gdh --stat'
 
 alias gdm='gd master...'
