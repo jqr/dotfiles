@@ -18,3 +18,5 @@ export EDITOR=$VISUAL
 #export GIT_EDITOR=`first_of "mate -wl1" "nano -w" vi`
 
 ulimit -n 10240
+
+test -e ${HOME}/.iterm2_shell_integration.bash && source ${HOME}/.iterm2_shell_integration.bash
