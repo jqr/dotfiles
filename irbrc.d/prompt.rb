@@ -1,5 +1,5 @@
 def setup_custom_irb_prompt(name)
-  return unless IRB.conf && IRB.conf[:PROMPT]
+  return unless IRB.respond_to?(:conf) && IRB.conf[:PROMPT]
   green = "\e[32m"
   red = "\e[31m"
   clear = "\e[0m"
