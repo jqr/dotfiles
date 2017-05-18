@@ -84,7 +84,7 @@ complete -o default -o nospace -F _git_branch gb
 alias gbu='git branch -v --no-merged'
 alias gbum='git branch -v --no-merged master'
 
-alias gbr='git for-each-ref --sort=committerdate --format="%(refname:short)%09%(subject)" refs/remotes/*/* | grep -ve "^tddium/" | git_columnize'
+alias gbr='git for-each-ref --sort=committerdate --format="%(refname:short)%09%(subject)" refs/remotes/*/** | grep -ve "^tddium/" | git_columnize'
 alias gbru='git branch -v -r --no-merged'
 alias gbrum='git branch -v -r --no-merged master'
 alias gba='git branch -v -a'
