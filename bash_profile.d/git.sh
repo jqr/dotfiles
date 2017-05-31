@@ -23,11 +23,13 @@ alias "g}b"='git stash branch'
 
 alias gs='git status -sb && git stash list'
 alias gd='git diff -M'
-alias gds='gd --stat'
 complete -o default -o nospace -F _git_diff gd
+alias gds='gd --stat'
+complete -o default -o nospace -F _git_diff gds
 alias gdh='gd HEAD'
-alias gdo='gd origin/$(current_git_branch)'
 alias gdhs='gdh --stat'
+alias gdo='gd origin/$(current_git_branch)'
+alias gdos='gdo --stat'
 
 alias gdm='gd master...'
 alias gdms='gd --stat master...'
