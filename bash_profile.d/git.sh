@@ -1,51 +1,104 @@
+# Basic commands, all are suped up versions which do slightly more than the
+# original. See below for full descriptions, or just start using this list as
+# a crash course. Almost all commands have autocompletions too, so give that a
+# shot.
+#
+# gs = git status
+# gp = git pull
+# gl = git log
+# gd = git diff
+# ga = git add
+# gc = git commit
+# gu = git upload: git push really
+# gb = git branch: shows local branches
+# gbr = git branch remote: shows remote branches
+# grb = git remote branch: makes a new remote branch
+#
+# Common suffixes, mostly on diffs/logs
+# p = patch, open the interactive mode for selecting parts of files to include.
+# s = stats, shows summary information
+# m = master, comparing with master
+#
+#
+# The rest of this file is the aliases/functions I use regularly, in this format:
+#
+# acronym expansion: human explanation
+
+
+# git: Yes, I'm occasionally this lazy. git is is aliased as just g.
 alias g='git'
 
+# git init: make a new repo with some sensible defaults, commit it, show me the log for good measure.
 alias gi='git init && printf ".DS_Store\nThumbs.db\n" >> .gitignore && git add .gitignore && git commit -qm "Added standard .gitignore." && gl'
 
-alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%an %cr)%Creset' --abbrev-commit --date=relative"
-
-# Git commits by date
-alias gcd="git rev-list --remotes --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short  | grep -v ^commit | less -R"
-# Git commits by date and author
+# git commits date: Git commits by date across all branches, aka wtf has everyone been up to?
+alias gcd="git rev-list --all --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short  | grep -v ^commit | less -R"
+# git commits date author: ... and author, helpful if you forget what you did.
 gcda() {
-  git rev-list --remotes --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short --author "$1" | grep -v ^commit | less -R
+  git rev-list --all --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short --author "$1" | grep -v ^commit | less -R
 }
 
-alias glp='gl -p'
-alias glpm="glp master.."
-alias glg='gl --graph --branches'
+# git log: history with pretty colors and relative times
+alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%an %cr)%Creset' --abbrev-commit --date=relative"
+# git log master: ... only show commits different from master
 alias glm="gl master.."
 
+# git log patch: git log but also what changed.
+alias glp='gl -p'
+# git log patch master: ... only show commits different from master
+alias glpm="glp master.."
+# git log graph: history with fancy graph and branches, great for simple branching.
+alias glg='gl --graph --branches'
+
+# git stash: get it? adds everything changed to the stash, including untracked files.
 alias "g{"='echo -n "Name this stash (optional): "; read name; if [[ -n $name ]]; then git stash save -u "$name"; else git stash -u; fi'
+# git stash patch: ... but select patches interactively.
 alias "g{p"='echo -n "Name this stash (optional): "; read name; if [[ -n $name ]]; then git stash save -p -u "$name"; else git stash -p -u; fi'
+# git unstash: unstash the most recent stash.
 alias "g}"='git stash pop'
+# git unstash branch: actually check out the revision where this was stashed so as not to make a mess.
 alias "g}b"='git stash branch'
 
+# git status: short mode and also list the stash
 alias gs='git status -sb && git stash list'
+# git diff: wtf have I changed? include renames. this doesn't include staged changes.
 alias gd='git diff -M'
 complete -o default -o nospace -F _git_diff gd
+# git diff stats: which files have I changed, and how much?
 alias gds='gd --stat'
 complete -o default -o nospace -F _git_diff gds
+# git diff head: same as gd but includes staged changes.
 alias gdh='gd HEAD'
+# git diff head stats: ... which files and how much?
 alias gdhs='gdh --stat'
+# git diff origin: show diff between this branch and the same branch on origin.
 alias gdo='gd origin/$(current_git_branch)'
+# git diff origin stats: ... which files and how much?
 alias gdos='gdo --stat'
 
+# git diff master: show diff between this branch and master.
 alias gdm='gd master...'
+# git diff master stats: ... which files and how much?
 alias gdms='gd --stat master...'
 
+# git add: yep, that's what it is.
 alias ga='git add'
 complete -o default -o nospace -F _git_add ga
+# git add all: also add things like deletes.
 alias gaa='git add --all'
 complete -o default -o nospace -F _git_add gaa
+# git add patch: interactively select things to add.
 alias gap='git add -p'
+
+# git commit: open my editor with a diff and let me write up a description, ^C if you see more in the diff than you wanted.
 alias gc='git commit -v'
 complete -o default -o nospace -F _git_commit gc
+
+# git commit ammend: oh crap, I meant to add this to that commit too! you probably shouldn't do this after pushing commits.
 alias gca='gc -a'
 complete -o default -o nospace -F _git_add gca
 
-# Special case for gco origin/branch_name that makes a local branch of the
-# same name.
+# git checkout: switch branches or revert changes to a file, but also detect branches that begin with origin/ which is autocompleteable and make local branch of the same name.
 gco() {
   if [[ $1 == origin/* ]]; then
     local local_branch
@@ -57,12 +110,17 @@ gco() {
   fi
 }
 complete -o default -o nospace -F _git_checkout gco
+# git checkout patch: revert some, but not all changes to a file.
 alias gcop="git checkout -p"
 
+# git reset: unstage changes.
 alias gr="git reset"
+# git reset patch: ... interacively unstage changes.
 alias grp="git reset -p"
 
+# git pull: this used to be fancy and list the diff, but I seem to have disabled it for reasons I don't recall :)
 gp() {
+  # WARNING: you should not call this after doing a merge as it will mess it up. push first!
   # local before=`git show --format=%H` &&
   git pull --rebase || (notify "pull failed" "Git" && false)
   # local after=`git show --format=%H`
@@ -73,27 +131,46 @@ gp() {
   # return $exit_code
 }
 
+# git upload: upload... it's like push, but gp already was spoken for.
 alias gu='git push origin HEAD || (notify "push failed" "Git" && false)'
+
+# git rebase interactive: opens your editor with a list of commits that haven't been pushed, then allows you to edit/remove/squash them, use gca to modify commits and grc to continue, git rebase --abort to GTFO.
 alias gri='git rebase -i HEAD~$(git_commits_ahead | sed "s/[^0-9]//")'
+# git rebase continue: continue on once you're satisified with changes to the current commit.
 alias grc='git rebase --continue'
+
+# git fetch: get changes from origin, but don't do a merge/rebase, useful for seeing what else has happened without making changes.
 alias gf='git fetch'
+# git fetch all: ... do that but for every remote defined.
 alias gfa='git fetch --all'
 
+# a helper used for some of the branch stuff.
 alias git_columnize="column -t -s $'\t'"
 
+# git branch: show local git branches and the most recent commit.
 alias gb='git for-each-ref --sort=committerdate --format="%(refname:short)%09%(subject)" refs/heads/ | git_columnize'
 complete -o default -o nospace -F _git_branch gb
+# git branch unmerged: show branches not merged into this branch.
 alias gbu='git branch -v --no-merged'
+# git branch unmerged master: show branches not merged into master.
 alias gbum='git branch -v --no-merged master'
 
+# git branch remote: show remote git branches and most recent commit.
 alias gbr='git for-each-ref --sort=committerdate --format="%(refname:short)%09%(subject)" refs/remotes/*/** | grep -ve "^tddium/" | git_columnize'
+# git branch remote unmerged: show remote branches not merged into this branch.
 alias gbru='git branch -v -r --no-merged'
+# git branch remote unmerged naster: show remote branches not merged into master.
 alias gbrum='git branch -v -r --no-merged master'
+# git branch all: show all branches
 alias gba='git branch -v -a'
+# git branch all: show all branches unmerged into this branch.
 alias gbau='git branch -v -a --no-merged'
+# git branch all: show all branches unmerged into master.
 alias gbaum='git branch -v -a --no-merged master'
 
+# git branch delete merged: deletes local branches that have been merged into this one, skips master :)
 alias gbdm='git branch --merged | grep -v "*" |  grep -ve "^\s*master$" | xargs -n 1 git branch -d'
+# git branch remote delete merged: deletes remote branches that have been merged into this one (with confirmation), also removes markers for remote branches that no longer exist.
 gbrdm() {
   local upstream="origin"
   git fetch $upstream
@@ -111,11 +188,12 @@ gbrdm() {
     echo "Nothing to delete"
   fi
 }
-
+# git remote prune origin: cleans remote branches which no longer exist.
 alias grpo='git remote prune origin'
 
 alias gitx='gitx --all'
 
+# git garbage collect: removes git data which is no longer useful, like deleted branches, etc.
 ggc() {
   set -- "$(du -ks)"
   local before="$1"
@@ -125,6 +203,7 @@ ggc() {
   echo "Cleaned up $((before-after)) kb."
 }
 
+# git remote branch: branches from the current revision into a new branch that is immediatley pushed to master.
 grb() {
   if [ -n "$1" ]; then
     git push origin "HEAD:refs/heads/$1"
@@ -137,6 +216,7 @@ grb() {
   fi
 }
 
+# a helper that shows if git is doing something modal like bisecting, rebasing, or merging.
 git_mode() {
   # https://github.com/hashrocket/dotmatrix/commit/d888bfee55ca430ba109e011d8b0958e810f799a
   local git_dir
@@ -153,6 +233,8 @@ git_mode() {
   fi
   echo -n "$git_mode"
 }
+
+# a helper that shows the local branch name.
 current_git_branch() {
   local git_dir
   git_dir="$(git rev-parse --git-dir 2>/dev/null)"
@@ -164,24 +246,28 @@ current_git_branch() {
   fi
 }
 
+# a helper that shows the number of commits unpushed in this branch.
 git_commits_ahead() {
   git status -sb 2> /dev/null | head -n 1 | grep ahead | sed -e 's/.*ahead \([0-9]\{1,\}\).*/+\1/'
 }
 
+# a helper that shows the remote commits unapplied to this branch.
 git_commits_behind() {
   git status -sb 2> /dev/null | head -n 1 | grep behind | sed -e 's/.*behind \([0-9]\{1,\}\).*/-\1/'
 }
 
-# Roughly from git_completion
+# a helper that shows if any modifications are outstanding.
 git_dirty_state() {
   if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
     echo -n "*"
   fi
 }
 
+# a helper that wraps a bunch of helpers.
 git_special() {
   wrap_unless_empty "$(git_mode)" "$(git_commits_ahead)" "$(git_commits_behind)" "$(git_dirty_state)"
 }
+# a helper that joins strings and wraps them into parens if they're non-empty.
 wrap_unless_empty() {
   if [ -n "$1" ] || [ -n "$2" ] || [ -n "$3" ] || [ -n "$4" ]; then
     echo -n "($1$2$3$4)"
