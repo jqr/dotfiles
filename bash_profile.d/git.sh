@@ -191,8 +191,6 @@ gbrdm() {
 # git remote prune origin: cleans remote branches which no longer exist.
 alias grpo='git remote prune origin'
 
-alias gitx='gitx --all'
-
 # git garbage collect: removes git data which is no longer useful, like deleted branches, etc.
 ggc() {
   set -- "$(du -ks)"
