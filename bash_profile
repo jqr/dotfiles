@@ -3,7 +3,8 @@ if which rbenv > /dev/null; then
   export RBENV_ROOT=/usr/local/var/rbenv
   eval "$(rbenv init -)"
 fi
-export PATH="./bin:~/bin:$PATH" # ensure this is always first
+export PATH="bin:~/bin:$PATH" # ensure this is always first
+shopt -s checkhash # force path search on stale cache detected
 
 if [[ -s ~/perl5/perlbrew/etc/bashrc ]]; then
   source ~/perl5/perlbrew/etc/bashrc
