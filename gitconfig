@@ -7,4 +7,8 @@
   default = simple
 [color]
   ui = true
+[commit]
+  gpgsign = true
+[gpg]
+  program = gpg2
 # END GENERATED
