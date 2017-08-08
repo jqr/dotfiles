@@ -12,7 +12,7 @@ def nice_symlink(target, link)
   target = File.expand_path(target)
   link   = File.expand_path(link)
   puts "Linking #{link} => #{target}"
-  if File.exist?(link) && Pathname.new(link).realpath.to_s != target
+  if File.exist?(link) && Pathname.new(link).realpath.to_s != Pathname.new(target).realpath.to_s
     stop_error("File exists: #{link}")
   elsif !File.exist?(link)
     File.symlink(target, link)
