@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'irb/completion'
 
 # Use the simple prompt if possible.

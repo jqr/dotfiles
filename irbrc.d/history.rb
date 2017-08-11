@@ -3,7 +3,7 @@ MAXHISTSIZE = 1000
 
 begin
   histfile = File::expand_path(HISTFILE)
-  if File::exists?(histfile)
+  if File::exist?(histfile)
     lines = IO::readlines(histfile).collect { |line| line.chomp }
     puts "Read #{lines.size} saved history commands from '#{histfile}'." if $VERBOSE
     Readline::HISTORY.push(*lines)
