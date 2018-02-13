@@ -1,4 +1,3 @@
-alias s="subl"
 alias openports='sudo lsof -iTCP -sTCP:LISTEN -P'
 
 # http://superuser.com/questions/52483/terminal-tips-and-tricks-for-mac-os-x

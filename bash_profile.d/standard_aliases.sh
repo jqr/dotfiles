@@ -16,6 +16,8 @@ alias lc='wc -l'
 export CLICOLOR=1
 export LSCOLORS=gxgxcxdxbxegedabagacad
 
+alias s="subl"
+alias a="atom"
 alias e='$EDITOR'
 alias nano='nano -w'
 alias o='open'
