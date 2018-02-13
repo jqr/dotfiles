@@ -1,5 +1,5 @@
 case RUBY_PLATFORM
-when /darwin/ 
+when /darwin/
   def copy(str)
     IO.popen('pbcopy', 'w') { |f| f << str.to_s }
     str.to_s # return what we actually copied
@@ -22,4 +22,3 @@ end
 def eval_paste
   eval(paste)
 end
-

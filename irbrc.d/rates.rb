@@ -2,9 +2,9 @@
 # change.
 #
 #   rate { Time.now.to_i }
-#   # 1243457076 (0.999/sec) 
-#   # 1243457077 (0.999/sec) 
-#   # 1243457078 (0.999/sec) 
+#   # 1243457076 (0.999/sec)
+#   # 1243457077 (0.999/sec)
+#   # 1243457078 (0.999/sec)
 def rate(options = {})
   clear = `clear`
   defaults = {
@@ -23,11 +23,11 @@ def rate(options = {})
     rate = 0 unless rate.finite?
     last_value = values.last.first
     print clear if options[:clear]
-    time_to_zero = 
+    time_to_zero =
       if rate != 0 && last_value != 0 && (rate.abs / rate) != (last_value.abs / last_value)
         "%.3f hours" % (-last_value.to_f / rate / 60 / 60)
       end
-    
+
     puts "%15s (%s/sec) #{time_to_zero}" % [rate_delimiter(last_value), rate_delimiter("%.3f" % rate)]
     puts unless options[:clear]
     sleep options[:delay]
@@ -38,7 +38,7 @@ end
 # rate of change.
 #
 #   rates {{ :time => Time.now.to_i, :today => Date.today.to_time.to_i }}
-#   # time: 1243457162 (0.997/sec) 
+#   # time: 1243457162 (0.997/sec)
 #   # today: 1243396800 (0.000/sec)
 def rates(options = {})
   clear = `clear`
@@ -58,8 +58,8 @@ def rates(options = {})
       value_delta = values.last.first[key] - values.first.first[key]
       rate = (value_delta.to_f / time_delta)
       rate = 0 unless rate.finite?
-      last_value = values.last.first[key] 
-      time_to_zero = 
+      last_value = values.last.first[key]
+      time_to_zero =
         if rate != 0 && last_value != 0 && (rate.abs / rate) != (last_value.abs / last_value)
           "%.3f hours" % (-last_value.to_f / rate / 60 / 60)
         end
