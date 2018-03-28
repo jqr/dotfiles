@@ -135,7 +135,7 @@ gp() {
 alias gu='git push origin HEAD || (notify "push failed" "Git" && false)'
 
 # git rebase interactive: opens your editor with a list of commits that haven't been pushed, then allows you to edit/remove/squash them, use gca to modify commits and grc to continue, git rebase --abort to GTFO.
-alias gri='git rebase -i HEAD~$(git_commits_ahead | sed "s/[^0-9]//")'
+alias gri='git rebase -i ${1:HEAD~$(git_commits_ahead | sed "s/[^0-9]//")}'
 # git rebase continue: continue on once you're satisified with changes to the current commit.
 alias grc='git rebase --continue'
 
