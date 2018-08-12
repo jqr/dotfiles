@@ -1,10 +1,18 @@
 # http://codeinthehole.com/archives/17-The-most-important-command-line-tip-incremental-history-searching-with-.inputrc.html
+
+# Partial command line completion. Type g, then up arrow to see commands that
+# start with g.
 "\e[A": history-search-backward
 "\e[B": history-search-forward
+
+# Left/right arrows move around within command
 "\e[C": forward-char
 "\e[D": backward-char
+
+# Alt + left/right arrows move around by words within command
 "\e\e[C": forward-word
 "\e\e[D": backward-word
+
 
 # https://www.topbug.net/blog/2017/07/31/inputrc-for-humans/
 set completion-ignore-case On
