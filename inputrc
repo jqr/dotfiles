@@ -3,3 +3,11 @@
 "\e[B": history-search-forward
 "\e[C": forward-char
 "\e[D": backward-char
+"\e\e[C": forward-word
+"\e\e[D": backward-word
+
+# https://www.topbug.net/blog/2017/07/31/inputrc-for-humans/
+set completion-ignore-case On
+set show-all-if-ambiguous On
+set show-all-if-unmodified On
+set completion-prefix-display-length 3
