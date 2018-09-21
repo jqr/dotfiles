@@ -236,8 +236,8 @@ git_mode() {
 current_git_branch() {
   local git_dir
   git_dir="$(git rev-parse --git-dir 2>/dev/null)"
-  local git_branch
   if [ -d "$git_dir" ]; then
+    local git_branch
     git_branch=$(git symbolic-ref HEAD 2>/dev/null || git describe --exact-match HEAD 2>/dev/null | cut -c1-7 "$git_dir/HEAD")
     git_branch=${git_branch#refs/heads/}
     echo -n "$git_branch"
@@ -246,12 +246,12 @@ current_git_branch() {
 
 # a helper that shows the number of commits unpushed in this branch.
 git_commits_ahead() {
-  git status -sb 2> /dev/null | head -n 1 | grep ahead | sed -e 's/.*ahead \([0-9]\{1,\}\).*/+\1/'
+  git status --short --branch 2> /dev/null | head -n 1 | grep ahead | sed -e 's/.*ahead \([0-9]\{1,\}\).*/+\1/'
 }
 
 # a helper that shows the remote commits unapplied to this branch.
 git_commits_behind() {
-  git status -sb 2> /dev/null | head -n 1 | grep behind | sed -e 's/.*behind \([0-9]\{1,\}\).*/-\1/'
+  git status --short --branch 2> /dev/null | head -n 1 | grep behind | sed -e 's/.*behind \([0-9]\{1,\}\).*/-\1/'
 }
 
 # a helper that shows if any modifications are outstanding.
@@ -265,9 +265,10 @@ git_dirty_state() {
 git_special() {
   wrap_unless_empty "$(git_mode)" "$(git_commits_ahead)" "$(git_commits_behind)" "$(git_dirty_state)"
 }
+
 # a helper that joins strings and wraps them into parens if they're non-empty.
 wrap_unless_empty() {
-  if [ -n "$1" ] || [ -n "$2" ] || [ -n "$3" ] || [ -n "$4" ]; then
+  if [ -n "$1$2$3$4" ]; then
     echo -n "($1$2$3$4)"
   fi
 }
