@@ -17,7 +17,7 @@
 # Common suffixes, mostly on diffs/logs
 # p = patch, open the interactive mode for selecting parts of files to include.
 # s = stats, shows summary information
-# m = master, comparing with master
+# m = main, comparing with main(or automatically picks up alternate names)
 #
 #
 # The rest of this file is the aliases/functions I use regularly, in this format:
@@ -40,13 +40,18 @@ gcda() {
 
 # git log: history with pretty colors and relative times
 alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%an %cr)%Creset' --abbrev-commit --date=relative"
-# git log master: ... only show commits different from master
-alias glm="gl master.."
+# git log main: ... only show commits different from main
+glm() {
+  gl "$(git_main_branch).."
+}
 
 # git log patch: git log but also what changed.
 alias glp='gl -p'
-# git log patch master: ... only show commits different from master
-alias glpm="glp master.."
+# git log patch main: ... only show commits different from main
+glpm() {
+  glp "$(git_main_branch).."
+}
+
 # git log graph: history with fancy graph and branches, great for simple branching.
 alias glg='gl --graph --branches'
 
@@ -76,10 +81,14 @@ alias gdo='gd origin/$(current_git_branch)'
 # git diff origin stats: ... which files and how much?
 alias gdos='gdo --stat'
 
-# git diff master: show diff between this branch and master.
-alias gdm='gd master...'
-# git diff master stats: ... which files and how much?
-alias gdms='gd --stat master...'
+# git diff main: show diff between this branch and main.
+gdm() {
+  gd "$(git_main_branch)..."
+}
+# git diff main stats: ... which files and how much?
+gdms() {
+  gd --stat "$(git_main_branch)..."
+}
 
 # git add: yep, that's what it is.
 alias ga='git add'
@@ -152,36 +161,44 @@ alias gb='git for-each-ref --sort=committerdate --format="%(refname:short)%09%(s
 complete -o default -o nospace -F _git_branch gb
 # git branch unmerged: show branches not merged into this branch.
 alias gbu='git branch -v --no-merged'
-# git branch unmerged master: show branches not merged into master.
-alias gbum='git branch -v --no-merged master'
+# git branch unmerged main: show branches not merged into main.
+gbum() {
+  git branch -v --no-merged "$(git_main_branch)"
+}
 
 # git branch remote: show remote git branches and most recent commit.
 alias gbr='git for-each-ref --sort=committerdate --format="%(refname:short)%09%(subject)" refs/remotes/*/** | grep -ve "^tddium/" | git_columnize'
 # git branch remote unmerged: show remote branches not merged into this branch.
 alias gbru='git branch -v -r --no-merged'
-# git branch remote unmerged naster: show remote branches not merged into master.
-alias gbrum='git branch -v -r --no-merged master'
+# git branch remote unmerged naster: show remote branches not merged into main.
+gbrum() {
+  git branch -v -r --no-merged "$(git_main_branch)"
+}
 # git branch all: show all branches
 alias gba='git branch -v -a'
 # git branch all: show all branches unmerged into this branch.
 alias gbau='git branch -v -a --no-merged'
-# git branch all: show all branches unmerged into master.
-alias gbaum='git branch -v -a --no-merged master'
+# git branch all: show all branches unmerged into main.
+gbaum() {
+  git branch -v -a --no-merged "$(git_main_branch)"
+}
 
-# git branch delete merged: deletes local branches that have been merged into this one, skips master :)
-alias gbdm='git branch --merged | grep -v "*" |  grep -ve "^\s*master$" | xargs -n 1 git branch -d'
+# git branch delete merged: deletes local branches that have been merged into this one, skips main :)
+gbdm() {
+  git branch --merged | grep -v "*" |  grep -ve "^\s*$(git_main_branch)$" | xargs -n 1 git branch -d
+}
 # git branch remote delete merged: deletes remote branches that have been merged into this one (with confirmation), also removes markers for remote branches that no longer exist.
 gbrdm() {
   local upstream="origin"
   git fetch $upstream
   git remote prune $upstream
-  if git branch -r --merged | grep -v 'master$' | grep -ve "$(current_git_branch)\$" | grep "$upstream/"; then
+  if git branch -r --merged | grep -v "/$(git_main_branch)\$" | grep -ve "$(current_git_branch)\$" | grep "$upstream/"; then
     echo
     echo -n "Delete listed branches from $upstream? (y/N) "
     local yes_or_no
     read -r yes_or_no
     if [ "$yes_or_no" == "y" ]; then
-      git branch -r --merged | grep -v 'master$' | grep -ve "$(current_git_branch)\$" | grep "$upstream/" | sed -e "s/$upstream\\///" | xargs -n 100 git push $upstream --delete
+      git branch -r --merged | grep -v "/$(git_main_branch)\$" | grep -ve "$(current_git_branch)\$" | grep "$upstream/" | sed -e "s/$upstream\\///" | xargs -n 100 git push $upstream --delete
       git remote prune $upstream
     fi
   else
@@ -195,13 +212,13 @@ alias grpo='git remote prune origin'
 ggc() {
   set -- "$(du -ks)"
   local before="$1"
-  git reflog expire --expire=1.minute refs/heads/master && git fsck --unreachable && git prune && git gc
+  git reflog expire --expire=1.minute "$(git_main_branch)" && git fsck --unreachable && git prune && git gc
   set -- "$(du -ks)"
   local after="$1"
   echo "Cleaned up $((before-after)) kb."
 }
 
-# git remote branch: branches from the current revision into a new branch that is immediatley pushed to master.
+# git remote branch: branches from the current revision into a new branch that is immediatley pushed to origin.
 grb() {
   if [ -n "$1" ]; then
     git push origin "HEAD:refs/heads/$1"
@@ -270,5 +287,16 @@ git_special() {
 wrap_unless_empty() {
   if [ -n "$1$2$3$4" ]; then
     echo -n "($1$2$3$4)"
+  fi
+}
+
+# a helper to return the primary or "default" branch name
+git_main_branch() {
+  local origin_head
+  origin_head="$(git symbolic-ref refs/remotes/origin/HEAD 2> /dev/null | cut -d "/" -f4)"
+  if [ -n "$origin_head" ]; then
+    echo "$origin_head"
+  else
+    git branch --list --format "%(refname:short)" | grep -E "^(main|master)\$" | sort | head -n 1
   fi
 }
