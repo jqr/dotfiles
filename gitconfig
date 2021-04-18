@@ -1,6 +1,8 @@
 # START GENERATED
 [core]
   excludesfile = ~/.gitignore
+[init]
+  defaultBranch = main
 [branch]
   autosetuprebase = always
 [push]
