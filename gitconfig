@@ -13,4 +13,6 @@
   gpgsign = true
 [gpg]
   program = gpg2
+[checkout]
+  defaultRemote = origin
 # END GENERATED
