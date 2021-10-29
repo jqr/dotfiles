@@ -98,6 +98,10 @@ alias gaa='git add --all'
 complete -o default -o nospace -F _git_add gaa
 # git add patch: interactively select things to add.
 alias gap='git add -p'
+# git add patch wildcard: select changed files by wildcard
+gap*() {
+  gap "*$1*"
+}
 
 # git commit: open my editor with a diff and let me write up a description, ^C if you see more in the diff than you wanted.
 alias gc='git commit -v'
