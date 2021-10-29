@@ -1,4 +1,4 @@
-export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin:$PATH
+export PATH=/opt/homebrew/bin:usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin:$PATH
 if which rbenv > /dev/null; then
   export RBENV_ROOT=/usr/local/var/rbenv
   eval "$(rbenv init -)"
