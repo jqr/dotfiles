@@ -59,6 +59,8 @@ alias glg='gl --graph --branches'
 alias "g{"='echo -n "Name this stash (optional): "; read name; if [[ -n $name ]]; then git stash save -u "$name"; else git stash -u; fi'
 # git stash patch: ... but select patches interactively.
 alias "g{p"='echo -n "Name this stash (optional): "; read name; if [[ -n $name ]]; then git stash save -p "$name"; else git stash -p; fi'
+# git stash staged: ... but select patches which are staged.
+alias "g{s"='git stash --staged'
 # git unstash: unstash the most recent stash.
 alias "g}"='git stash pop'
 # git unstash branch: actually check out the revision where this was stashed so as not to make a mess.
