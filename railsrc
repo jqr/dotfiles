@@ -1,7 +1,7 @@
 def detect_rails_root
   dir = Dir.pwd
   while (dir != '/') do
-    return dir if File.exists?(File.join(dir, 'config', 'environment.rb'))
+    return dir if File.exist?(File.join(dir, 'config', 'environment.rb'))
     dir = File.dirname(dir)
   end
 end

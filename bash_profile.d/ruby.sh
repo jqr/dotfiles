@@ -2,6 +2,7 @@
 
 alias r='rails'
 alias rc='rails console'
+alias rt='rails test'
 alias rg='rails generate'
 alias rd='rails destroy'
 alias rs='rails server'
