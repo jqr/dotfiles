@@ -45,6 +45,10 @@ glm() {
   gl "$(git_main_branch).."
 }
 
+glo() {
+  gl "origin/$(current_git_branch).."
+}
+
 # git log patch: git log but also what changed.
 alias glp='gl -p'
 # git log patch main: ... only show commits different from main
