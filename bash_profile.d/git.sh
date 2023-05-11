@@ -135,6 +135,10 @@ gco() {
   fi
 }
 complete -o default -o nospace -F _git_checkout gco
+#git checkout main
+gcom() {
+  gco "$(git_main_branch)"
+}
 # git checkout patch: revert some, but not all changes to a file.
 alias gcop="git checkout -p"
 
