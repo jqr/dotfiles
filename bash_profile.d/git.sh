@@ -29,7 +29,13 @@
 alias g='git'
 
 # git init: make a new repo with some sensible defaults, commit it, show me the log for good measure.
-alias gi='git init && printf ".DS_Store\nThumbs.db\n" >> .gitignore && git add .gitignore && git commit -qm "Added standard .gitignore." && gl'
+gi() {
+  if [ -d ".git" ]; then
+    echo "Already in a git repo."
+  else
+    git init && printf ".DS_Store\nThumbs.db\n" >> .gitignore && git add .gitignore && git commit -qm "Added standard .gitignore." && gl
+  fi
+}
 
 # git commits date: Git commits by date across all branches, aka wtf has everyone been up to?
 alias gcd="git rev-list --all --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short  | grep -v ^commit | less -R"
