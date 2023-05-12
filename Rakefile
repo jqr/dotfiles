@@ -25,6 +25,17 @@ task :install do
   home = ENV['HOME']
   pwd = File.dirname(__FILE__)
 
+  if `git symbolic-ref refs/remotes/origin/HEAD`.chomp != "refs/remotes/origin/main"
+    puts "Correcting master -> main branch rename"
+
+    exec("
+      git branch --move master main &&
+      git fetch origin &&
+      git branch --set-upstream-to origin/main main &&
+      git remote set-head origin --auto
+    ") || abort
+  end
+
   LINK_FILES.each do |file|
     nice_symlink("#{pwd}/#{file}", "#{home}/.#{file}")
   end
