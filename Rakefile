@@ -23,7 +23,7 @@ end
 desc "Install all dotfiles"
 task :install do
   home = ENV['HOME']
-  pwd = File.dirname(__FILE__)
+  Dir.chdir(File.dirname(__FILE__))
 
   if `git symbolic-ref refs/remotes/origin/HEAD`.chomp != "refs/remotes/origin/main"
     puts "Correcting master -> main branch rename"
@@ -37,11 +37,11 @@ task :install do
   end
 
   LINK_FILES.each do |file|
-    nice_symlink("#{pwd}/#{file}", "#{home}/.#{file}")
+    nice_symlink(file, "#{home}/.#{file}")
   end
 
   INSERT_FILES.each do |file|
-    insert = File.read("#{pwd}/#{file}").strip
+    insert = File.read(file).strip
     lines = insert.split("\n")
 
     matcher = Regexp.new(Regexp.escape(lines.first) + '.*?' + Regexp.escape(lines.last), Regexp::MULTILINE)
