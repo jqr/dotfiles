@@ -54,7 +54,7 @@ def rates(options = {})
     values = values.last(options[:width])
     time_delta = values.last.last - values.first.last
     print clear if options[:clear]
-    values.first.first.keys.sort { |a, b| a.to_s <=> b.to_s }.each do |key|
+    values.first.first.keys.each do |key|
       value_delta = values.last.first[key] - values.first.first[key]
       rate = (value_delta.to_f / time_delta)
       rate = 0 unless rate.finite?
