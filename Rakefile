@@ -1,6 +1,6 @@
 require 'pathname'
 
-LINK_FILES = %w(irbrc irbrc.d pryrc railsrc railsrc.d aprc bash_profile bash_profile.d editrc inputrc ackrc gitignore)
+LINK_FILES = %w(irbrc irbrc.d pryrc railsrc railsrc.d aprc bash_profile bash_profile.d editrc inputrc ackrc gitignore gitattributes)
 INSERT_FILES = %w(gemrc gitconfig)
 
 def stop_error(message)
@@ -46,7 +46,7 @@ task :install do
 
     matcher = Regexp.new(Regexp.escape(lines.first) + '.*?' + Regexp.escape(lines.last), Regexp::MULTILINE)
 
-    contents = File.exists?("#{home}/.#{file}") ? File.read("#{home}/.#{file}") : ''
+    contents = File.exist?("#{home}/.#{file}") ? File.read("#{home}/.#{file}") : ''
 
     puts "Insert content into #{home}/.#{file}"
     output =

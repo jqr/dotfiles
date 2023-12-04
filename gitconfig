@@ -1,6 +1,7 @@
 # START GENERATED
 [core]
   excludesfile = ~/.gitignore
+  attributesfile = ~/.gitattributes
 [init]
   defaultBranch = main
 [branch]
