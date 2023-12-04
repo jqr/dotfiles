@@ -4,10 +4,10 @@
   attributesfile = ~/.gitattributes
 [init]
   defaultBranch = main
-[branch]
-  autosetuprebase = always
 [push]
   default = simple
+[pull]
+  rebase = true
 [color]
   ui = true
 [commit]
