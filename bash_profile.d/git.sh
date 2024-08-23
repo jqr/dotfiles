@@ -104,7 +104,7 @@ alias gdos='gdo --stat'
 
 # git diff main: show diff between this branch and main.
 gdm() {
-  gd "$(git_main_branch)..."
+  gd "$(git_main_branch)..." $@
 }
 # git diff main stats: ... which files and how much?
 gdms() {
