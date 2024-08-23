@@ -14,7 +14,7 @@ touch() {
     then
     mkdir -p "$dir"
   fi
-  /usr/bin/touch "$1"
+  /usr/bin/touch $@
 }
 
 myip() {
