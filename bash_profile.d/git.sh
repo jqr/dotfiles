@@ -128,8 +128,12 @@ gap*() {
 alias gc='git commit -v'
 complete -o default -o nospace -F _git_commit gc
 
-# git commit ammend: oh crap, I meant to add this to that commit too! you probably shouldn't do this after pushing commits.
+# git commit all changed files (not untracked).
 alias gca='gc -a'
+complete -o default -o nospace -F _git_add gca
+
+# git commit ammend: oh crap, I meant to add this to that commit too! you probably shouldn't do this after pushing commits.
+alias gcam='gc --amend'
 complete -o default -o nospace -F _git_add gca
 
 # git checkout: switch branches or revert changes to a file, but also detect branches that begin with origin/ which is autocompleteable and make local branch of the same name.
@@ -172,7 +176,7 @@ gp() {
 # git upload: upload... it's like push, but gp already was spoken for.
 alias gu='git push origin HEAD || (notify "push failed" "Git" && false)'
 
-# git rebase interactive: opens your editor with a list of commits that haven't been pushed, then allows you to edit/remove/squash them, use gca to modify commits and grc to continue, git rebase --abort to GTFO.
+# git rebase interactive: opens your editor with a list of commits that haven't been pushed, then allows you to edit/remove/squash them, use gcam to modify commits and grc to continue, git rebase --abort to GTFO.
 alias gri='git rebase -i ${1:HEAD~$(git_commits_ahead | sed "s/[^0-9]//")}'
 # git rebase continue: continue on once you're satisified with changes to the current commit.
 alias grc='git rebase --continue'
