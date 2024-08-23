@@ -24,6 +24,15 @@
 #
 # acronym expansion: human explanation
 
+# git touch changed: Touch every modified file to retrigger tests/builds.
+gtc() {
+  touch -c $(git status --no-renames --ignored=no --untracked-files=normal --porcelain=1 | grep -E '^(A |M | M|\?\?) ' | cut -c 4- | xargs)
+}
+# git touch changed main: Like gtc but looks at everything changed main..HEAD
+gtcm() {
+  echo "NOT YET"
+  exit 1
+}
 
 # git: Yes, I'm occasionally this lazy. git is is aliased as just g.
 alias g='git'
