@@ -37,6 +37,17 @@ gtcm() {
 # git: Yes, I'm occasionally this lazy. git is is aliased as just g.
 alias g='git'
 
+# git log: history with pretty colors and relative times
+alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%an %cr)%Creset' --abbrev-commit --date=relative"
+# git log main: ... only show commits different from main
+glm() {
+  gl "$(git_main_branch).."
+}
+
+glo() {
+  gl "origin/$(current_git_branch).."
+}
+
 # git init: make a new repo with some sensible defaults, commit it, show me the log for good measure.
 gi() {
   if [ -d ".git" ]; then
@@ -53,16 +64,6 @@ gcda() {
   git rev-list --all --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short --author "$1" | grep -v ^commit | less -R
 }
 
-# git log: history with pretty colors and relative times
-alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%an %cr)%Creset' --abbrev-commit --date=relative"
-# git log main: ... only show commits different from main
-glm() {
-  gl "$(git_main_branch).."
-}
-
-glo() {
-  gl "origin/$(current_git_branch).."
-}
 
 # git log patch: git log but also what changed.
 alias glp='gl -p'
