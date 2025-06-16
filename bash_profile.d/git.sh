@@ -87,7 +87,7 @@ alias "g}"='git stash pop'
 alias "g}b"='git stash branch'
 
 # git status: short mode and also list the stash
-alias gs='git status -sb && git stash list'
+alias gs='git status -sb && GIT_PAGER=cat git stash list'
 # git diff: wtf have I changed? include renames. this doesn't include staged changes.
 alias gd='git diff -M'
 complete -o default -o nospace -F _git_diff gd
