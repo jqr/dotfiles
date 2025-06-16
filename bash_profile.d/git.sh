@@ -26,7 +26,7 @@
 
 # git touch changed: Touch every modified file to retrigger tests/builds.
 gtc() {
-  touch -c $(git status --no-renames --ignored=no --untracked-files=normal --porcelain=1 | grep -E '^(A |M | M|\?\?) ' | cut -c 4- | xargs)
+  touch -c "$(git status --no-renames --ignored=no --untracked-files=normal --porcelain=1 | grep -E '^(A |M | M|\?\?) ' | cut -c 4- | xargs)"
 }
 # git touch changed main: Like gtc but looks at everything changed main..HEAD
 gtcm() {
