@@ -217,9 +217,15 @@ gbaum() {
   git branch -v -a --no-merged "$(git_main_branch)"
 }
 
-# git branch delete merged: deletes local branches that have been merged into this one, skips main :)
+# git branch delete merged: deletes local branches that have been merged into this one, skips main and worktree branches :)
 gbdm() {
-  git branch --merged | grep -v "*" |  grep -ve "^\s*$(git_main_branch)$" | xargs -n 1 git branch -d
+  local worktree_branches
+  worktree_branches=$(git worktree list --porcelain | grep '^branch ' | sed 's#branch refs/heads/##')
+  git branch --merged | grep -v "*" | grep -ve "^\s*$(git_main_branch)$" | while read -r branch; do
+    if ! echo "$worktree_branches" | grep -qxF "$branch"; then
+      git branch -d "$branch"
+    fi
+  done
 }
 # git branch remote delete merged: deletes remote branches that have been merged into this one (with confirmation), also removes markers for remote branches that no longer exist.
 gbrdm() {
