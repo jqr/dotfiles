@@ -85,6 +85,28 @@ alias "g{s"='git stash --staged'
 alias "g}"='git stash pop'
 # git unstash branch: actually check out the revision where this was stashed so as not to make a mess.
 alias "g}b"='git stash branch'
+alias "g{}"="git_stash_show"
+
+git_stash_show(){
+  pager="${GIT_PAGER:-$(git config --get core.pager)}"
+  pager="${pager:-${PAGER:-less -R}}"
+
+  yellow='\033[1;33m'
+  reset='\033[0m'
+
+  git stash list | while IFS= read -r line; do
+    stash="${line%%:*}"
+    echo -e "${yellow}================================================================================${reset}"
+    echo -e "${yellow}${line}${reset}"
+    echo -e "${yellow}================================================================================${reset}"
+    # Show tracked changes (including new staged files)
+    git diff --color=always "${stash}^1..${stash}" 2>/dev/null
+    # Show untracked files if they exist (stashed with -u)
+    git show --color=always --format="" "${stash}^3" 2>/dev/null
+    echo
+  done | $pager
+}
+
 
 # git status: short mode and also list the stash
 alias gs='git status -sb && GIT_PAGER=cat git stash list'
