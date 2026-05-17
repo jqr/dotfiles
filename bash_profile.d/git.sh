@@ -61,7 +61,7 @@ gi() {
 alias gcd="git rev-list --all --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short  | grep -v ^commit | less -R"
 # git commits date author: ... and author, helpful if you forget what you did.
 gcda() {
-  git rev-list --all --pretty=format:'%cd %Cgreen%an%Creset %Cred%h%Creset - %s' --abbrev-commit --date=short --author "$1" | grep -v ^commit | less -R
+  git rev-list --all --color --pretty=format:'%cd  %Cgreen%an%Creset  %Cred%h%Creset - %s' --abbrev-commit --date=short --author "$1" | grep -v ^commit | less -R
 }
 
 
