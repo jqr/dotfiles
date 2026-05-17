@@ -15,11 +15,9 @@ alias bu='bundle update'
 alias bo='bundle outdated'
 
 # decent Ruby options for faster local development
-export RUBY_GC_HEAP_INIT_SLOTS=800000
 export RUBY_HEAP_FREE_MIN=100000
 export RUBY_HEAP_SLOTS_INCREMENT=300000
 export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1
-export RUBY_GC_MALLOC_LIMIT=79000000
 export RUBY_YJIT_ENABLE=1
 
 # spring is very problematic on latest macOS
