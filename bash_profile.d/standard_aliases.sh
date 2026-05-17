@@ -1,4 +1,4 @@
-alias reload='source ~/.bash_profile && echo "Reloaded ~/.bash_profile"'
+alias reload='source ~/.bashrc && echo "Reloaded ~/.bashrc"'
 
 alias ..='cd ..'
 alias ...='cd ../..'
