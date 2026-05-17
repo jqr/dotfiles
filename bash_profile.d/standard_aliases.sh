@@ -22,3 +22,5 @@ alias a="atom"
 alias e='$EDITOR'
 alias nano='nano -w'
 alias o='open'
+
+alias k="kubectl"
