@@ -47,6 +47,12 @@ glm() {
 glo() {
   gl "origin/$(current_git_branch).."
 }
+# git log stats: ... with diffstat for each commit
+alias gls="gl --stat"
+# git log main stats: ... only commits different from main, with diffstat
+glms() {
+  gls "$(git_main_branch).."
+}
 
 # git init: make a new repo with some sensible defaults, commit it, show me the log for good measure.
 gi() {
