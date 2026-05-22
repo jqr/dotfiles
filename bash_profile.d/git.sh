@@ -34,6 +34,13 @@ gtcm() {
   exit 1
 }
 
+_git_require_origin() {
+  if ! git remote get-url origin &>/dev/null; then
+    echo "ERROR: No origin remote configured."
+    return 1
+  fi
+}
+
 # git: Yes, I'm occasionally this lazy. git is is aliased as just g.
 alias g='git'
 
@@ -45,6 +52,7 @@ glm() {
 }
 
 glo() {
+  _git_require_origin || return
   gl "origin/$(current_git_branch).."
 }
 # git log stats: ... with diffstat for each commit
@@ -127,9 +135,14 @@ alias gdh='gd HEAD'
 # git diff head stats: ... which files and how much?
 alias gdhs='gdh --stat'
 # git diff origin: show diff between this branch and the same branch on origin.
-alias gdo='gd origin/$(current_git_branch)'
+function gdo() {
+  _git_require_origin || return
+  gd "origin/$(current_git_branch)" "$@"
+}
 # git diff origin stats: ... which files and how much?
-alias gdos='gdo --stat'
+function gdos() {
+  gdo --stat "$@"
+}
 
 # git diff main: show diff between this branch and main.
 gdm() {
@@ -203,7 +216,10 @@ gp() {
 }
 
 # git upload: upload... it's like push, but gp already was spoken for.
-alias gu='git push origin HEAD || (notify "push failed" "Git" && false)'
+function gu() {
+  _git_require_origin || return
+  git push origin HEAD || (notify "push failed" "Git" && false)
+}
 
 # git rebase interactive: opens your editor with a list of commits that haven't been pushed, then allows you to edit/remove/squash them, use gcam to modify commits and grc to continue, git rebase --abort to GTFO.
 alias gri='git rebase -i ${1:HEAD~$(git_commits_ahead | sed "s/[^0-9]//")}'
@@ -288,6 +304,7 @@ ggc() {
 
 # git remote branch: branches from the current revision into a new branch that is immediatley pushed to origin.
 grb() {
+  _git_require_origin || return
   if [ -n "$1" ]; then
     git push origin "HEAD:refs/heads/$1"
     git fetch origin &&
