@@ -268,11 +268,21 @@ gbaum() {
   git branch -v -a --no-merged "$(git_main_branch)"
 }
 
+_git_protected_branch_filter() {
+  local protected_file
+  protected_file="$(git rev-parse --show-toplevel 2>/dev/null)/.git-protected-branches"
+  if [ -f "$protected_file" ]; then
+    grep -vEf "$protected_file"
+  else
+    cat
+  fi
+}
+
 # git branch delete merged: deletes local branches that have been merged into this one, skips main and worktree branches :)
 gbdm() {
   local worktree_branches
   worktree_branches=$(git worktree list --porcelain | grep '^branch ' | sed 's#branch refs/heads/##')
-  git branch --merged | grep -v "*" | grep -ve "^\s*$(git_main_branch)$" | while read -r branch; do
+  git branch --merged | grep -v "*" | grep -ve "^+" | grep -ve "^\s*$(git_main_branch)$" | _git_protected_branch_filter | while read -r branch; do
     if ! echo "$worktree_branches" | grep -qxF "$branch"; then
       git branch -d "$branch"
     fi
@@ -281,16 +291,18 @@ gbdm() {
 # git branch remote delete merged: deletes remote branches that have been merged into this one (with confirmation), also removes markers for remote branches that no longer exist.
 gbrdm() {
   local upstream="origin"
-  git fetch $upstream
-  git remote prune $upstream
-  if git branch -r --merged | grep -v "/$(git_main_branch)\$" | grep -ve "$(current_git_branch)\$" | grep "$upstream/"; then
+  git fetch "$upstream"
+  git remote prune "$upstream"
+  local delete=$(git branch -r --merged | grep -v "/$(git_main_branch)\$" | grep -ve "$(current_git_branch)\$" | _git_protected_branch_filter | grep "$upstream/" | sed -e "s/$upstream\\///")
+  if [ -n "$delete" ]; then
+    echo "$delete"
     echo
     echo -n "Delete listed branches from $upstream? (y/N) "
     local yes_or_no
     read -r yes_or_no
     if [ "$yes_or_no" == "y" ]; then
-      git branch -r --merged | grep -v "/$(git_main_branch)\$" | grep -ve "$(current_git_branch)\$" | grep "$upstream/" | sed -e "s/$upstream\\///" | xargs -n 100 git push $upstream --delete
-      git remote prune $upstream
+      echo "$delete" | xargs -n 100 git push "$upstream" --delete
+      git remote prune "$upstream"
     fi
   else
     echo "Nothing to delete"
