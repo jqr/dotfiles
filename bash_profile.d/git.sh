@@ -178,6 +178,13 @@ complete -o default -o nospace -F _git_add gca
 alias gcam='gc --amend'
 complete -o default -o nospace -F _git_add gca
 
+# git commit fixup: use --fixup on a previous commit and autorebase.
+gcf() {
+  local id="$1"
+  shift
+  git commit --fixup="$id" "$@" && git rebase -i "$id~1"
+}
+
 # git checkout: switch branches or revert changes to a file, but also detect branches that begin with origin/ which is autocompleteable and make local branch of the same name.
 gco() {
   if [[ $1 == origin/* ]]; then
