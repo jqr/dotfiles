@@ -3,16 +3,24 @@ set -e
 
 repo_dir="$(cd "$(dirname "$0")/.." && pwd)"
 
+fresh=false
+if [ "${1:-}" = "--fresh" ]; then
+  fresh=true
+  shift
+fi
+
 if [ $# -eq 0 ]; then
-  echo "Usage: script/test-install <rev> [<rev> ...]"
+  echo "Usage: script/test-install [--fresh] <rev> [<rev> ...]"
   echo ""
   echo "Installs each revision in order into a temporary HOME and"
   echo "verifies bash and zsh start cleanly after each step."
   echo "Use '.' for the current working tree."
+  echo "Use --fresh to start with an empty HOME (no pre-existing config)."
   echo ""
   echo "Examples:"
   echo "  script/test-install .              # test working tree"
-  echo "  script/test-install HEAD~1 HEAD .  # test upgrade path"
+  echo "  script/test-install --fresh .      # test fresh install"
+  echo "  script/test-install HEAD~1 HEAD .  # test upgrade sequence"
   exit 1
 fi
 
@@ -22,6 +30,14 @@ temp_repo=$(mktemp -d)
 trap "rm -rf ${temp_home:?} ${temp_repo:?}" EXIT
 
 git clone --quiet "$repo_dir" "$temp_repo"
+
+if [ "$fresh" = false ]; then
+  echo "# user gemrc content" > "$temp_home/.gemrc"
+  echo "# user gitconfig content" > "$temp_home/.gitconfig"
+fi
+
+revs=("$@")
+last_rev="${revs[${#revs[@]}-1]}"
 
 for rev in "$@"; do
   if [ "$rev" = "." ]; then
@@ -54,26 +70,42 @@ for rev in "$@"; do
     fi
   fi
 
-  # Verify key function is defined
-  output=$(HOME="$temp_home" bash -i -c 'type gs' 2>&1 | grep -Ev "no job control|^exit$" || true)
-  if ! echo "$output" | grep -q "function\|alias"; then
-    echo "FAIL: gs not defined after installing $rev"
-    exit 1
+  if [ "$rev" = "$last_rev" ]; then
+    # Verify key function is defined
+    output=$(HOME="$temp_home" bash -i -c 'type gs' 2>&1 | grep -Ev "no job control|^exit$" || true)
+    if ! echo "$output" | grep -q "function\|alias"; then
+      echo "FAIL: gs not defined after installing $rev"
+      exit 1
+    fi
+
+    # Verify completion is loaded
+    output=$(HOME="$temp_home" bash -i -c 'complete -p gd' 2>&1 | grep -Ev "no job control|^exit$" || true)
+    if ! echo "$output" | grep -q "complete"; then
+      echo "FAIL: gd completion not loaded after installing $rev"
+      exit 1
+    fi
+
+    # Verify EDITOR is set
+    output=$(HOME="$temp_home" bash -i -c 'echo "$EDITOR"' 2>&1 | grep -Ev "no job control|^exit$" || true)
+    if [ -z "$output" ]; then
+      echo "FAIL: EDITOR not set after installing $rev"
+      exit 1
+    fi
   fi
 
-  # Verify completion is loaded
-  output=$(HOME="$temp_home" bash -i -c 'complete -p gd' 2>&1 | grep -Ev "no job control|^exit$" || true)
-  if ! echo "$output" | grep -q "complete"; then
-    echo "FAIL: gd completion not loaded after installing $rev"
-    exit 1
-  fi
-
-  # Verify EDITOR is set
-  output=$(HOME="$temp_home" bash -i -c 'echo "$EDITOR"' 2>&1 | grep -Ev "no job control|^exit$" || true)
-  if [ -z "$output" ]; then
-    echo "FAIL: EDITOR not set after installing $rev"
-    exit 1
-  fi
+  # Verify inserted content in gemrc and gitconfig
+  for insert_file in .gemrc .gitconfig; do
+    if [ -f "$temp_home/$insert_file" ]; then
+      if ! grep -q "# START GENERATED" "$temp_home/$insert_file"; then
+        echo "FAIL: $insert_file missing generated block after installing $rev"
+        exit 1
+      fi
+      if [ "$fresh" = false ] && ! grep -q "# user .* content" "$temp_home/$insert_file"; then
+        echo "FAIL: $insert_file lost user content after installing $rev"
+        exit 1
+      fi
+    fi
+  done
 
   # Verify no stale symlinks pointing into our repo
   dotfiles_dir=$(cd "$temp_repo" && pwd -P)
