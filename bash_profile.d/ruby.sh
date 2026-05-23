@@ -31,5 +31,6 @@ export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 # rtdm: rails test diff main
 rtdm() {
+  # shellcheck disable=SC2046 # word splitting is intentional, each file is a separate arg
   rails test $(git diff "$(git_main_branch)" --name-status | grep -E $'^[^D]\t(test|spec)/.*\.rb')
 }

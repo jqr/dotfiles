@@ -90,6 +90,7 @@ glpm() {
 alias glg='gl --graph --branches'
 
 # git stash: get it? adds everything changed to the stash, including untracked files.
+# shellcheck disable=SC2154 # name is assigned by read inside the alias
 alias "g{"='echo -n "Name this stash (optional): "; read -r name; if [[ -n $name ]]; then git stash save --include-untracked "$name"; else git stash --include-untracked; fi'
 # git stash patch: ... but select patches interactively.
 alias "g{p"='echo -n "Name this stash (optional): "; read -r name; if [[ -n $name ]]; then git stash save --patch "$name"; else git stash --patch; fi'
@@ -307,6 +308,7 @@ gbrdm() {
   local upstream="origin"
   git fetch "$upstream"
   git remote prune "$upstream"
+  # shellcheck disable=SC2155 # return value of git branch is not meaningful here
   local delete=$(git branch -r --merged | grep -v "/$(git_main_branch)\$" | grep -ve "$(current_git_branch)\$" | _git_protected_branch_filter | grep "$upstream/" | sed -e "s/$upstream\\///")
   if [ -n "$delete" ]; then
     echo "$delete"
