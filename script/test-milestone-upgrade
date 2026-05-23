@@ -17,51 +17,106 @@ if [ $# -eq 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 fi
 
 min_gap="$1"
+max_jobs="${2:-8}"
 
 green='\033[0;32m'
 red='\033[0;31m'
 yellow='\033[0;33m'
-dim='\033[2m'
 nc='\033[0m'
 
 milestones=$("$repo_dir/script/install-milestones" "$min_gap")
+total=$(echo "$milestones" | wc -l | tr -d ' ')
 
-temp_repo=$(mktemp -d)
-trap "rm -rf $temp_repo" EXIT
-git clone --quiet "$repo_dir" "$temp_repo"
+echo "Testing upgrade from $total milestones (${min_gap}+ day gaps) to current..."
+echo ""
 
-while read -r current_hash current_date current_time rest; do
+results_dir=$(mktemp -d)
+trap "rm -rf $results_dir" EXIT
 
+test_milestone() {
+  local current_hash="$1"
+  local result_file="$results_dir/$current_hash"
+
+  local temp_repo temp_home
+  temp_repo=$(mktemp -d)
   temp_home=$(mktemp -d)
 
-  echo -ne "${yellow}${current_date} ${current_time}${nc} ${dim}${current_hash}${nc} -> current ... "
-
+  git clone --quiet "$repo_dir" "$temp_repo"
   git -C "$temp_repo" checkout --quiet "$current_hash" -- .
   HOME="$temp_home" rake -f "$temp_repo/Rakefile" install --quiet >/dev/null 2>&1 || true
 
   rsync -a --exclude=.git "$repo_dir/" "$temp_repo/"
-  HOME="$temp_home" rake -f "$temp_repo/Rakefile" install --quiet >/dev/null 2>&1
+  HOME="$temp_home" rake -f "$temp_repo/Rakefile" install --quiet >/dev/null 2>&1 || {
+    echo "rake install failed" > "$result_file.fail"
+    rm -rf "$temp_repo" "$temp_home"
+    return
+  }
 
+  local output
   output=$(HOME="$temp_home" bash -i -c 'exit' 2>&1 | grep -Ev "no job control|^exit$" || true)
   if [ -n "$output" ]; then
-    echo -e "${red}FAIL${nc}"
-    echo "  bash produced unexpected output:"
-    echo "  $output"
-    rm -rf "$temp_home"
-    exit 1
+    echo "bash: $output" > "$result_file.fail"
+    rm -rf "$temp_repo" "$temp_home"
+    return
   fi
 
   if [ -f "$temp_repo/zshrc" ]; then
     output=$(HOME="$temp_home" zsh -i -c 'exit' 2>&1 || true)
     if [ -n "$output" ]; then
-      echo -e "${red}FAIL${nc}"
-      echo "  zsh produced unexpected output:"
-      echo "  $output"
-      rm -rf "$temp_home"
-      exit 1
+      echo "zsh: $output" > "$result_file.fail"
+      rm -rf "$temp_repo" "$temp_home"
+      return
     fi
   fi
 
-  rm -rf "$temp_home"
-  echo -e "${green}OK${nc}"
+  touch "$result_file.ok"
+  rm -rf "$temp_repo" "$temp_home"
+}
+
+pids=()
+labels=()
+hashes=()
+
+while read -r current_hash current_date current_time rest; do
+  labels+=("${current_date} ${current_time} ${current_hash}")
+  hashes+=("$current_hash")
+  test_milestone "$current_hash" &
+  pids+=($!)
+
+  if [ "${#pids[@]}" -ge "$max_jobs" ]; then
+    wait "${pids[0]}"
+    pids=("${pids[@]:1}")
+  fi
 done <<< "$milestones"
+
+# Print results in order as they complete
+failed=0
+for i in "${!hashes[@]}"; do
+  # Wait for this specific job if still running
+  if [ -n "${pids[$i]+x}" ]; then
+    wait "${pids[$i]}" 2>/dev/null || true
+  fi
+
+  # Poll until result file appears
+  while [ ! -f "$results_dir/${hashes[$i]}.ok" ] && [ ! -f "$results_dir/${hashes[$i]}.fail" ]; do
+    sleep 0.1
+  done
+
+  if [ -f "$results_dir/${hashes[$i]}.fail" ]; then
+    echo -e "${yellow}${labels[$i]}${nc} -> current ... ${red}FAIL${nc}"
+    echo "  $(cat "$results_dir/${hashes[$i]}.fail")"
+    failed=1
+  else
+    echo -e "${yellow}${labels[$i]}${nc} -> current ... ${green}OK${nc}"
+  fi
+done
+
+echo ""
+passed=$((total - failed))
+if [ "$failed" -eq 0 ]; then
+  echo -e "${green}All $total milestones passed.${nc}"
+else
+  echo -e "${passed}/${total} passed, ${red}${failed} failed${nc}."
+fi
+
+exit $((failed > 0))
