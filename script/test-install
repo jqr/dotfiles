@@ -1,0 +1,48 @@
+#!/bin/bash
+set -e
+
+repo_dir="$(cd "$(dirname "$0")/.." && pwd)"
+
+if [ $# -eq 0 ]; then
+  set -- HEAD
+fi
+
+temp_home=$(mktemp -d)
+temp_repo=$(mktemp -d)
+trap "rm -rf $temp_home $temp_repo" EXIT
+
+git clone --quiet "$repo_dir" "$temp_repo"
+
+for rev in "$@"; do
+  if [ "$rev" = "." ]; then
+    label="(working tree)"
+    rsync -a --exclude=.git "$repo_dir/" "$temp_repo/"
+  else
+    git -C "$temp_repo" checkout --quiet "$rev" -- .
+    label=$(git -C "$temp_repo" log --oneline -1 "$rev" 2>/dev/null) || {
+      echo "FAIL: unknown revision $rev"
+      exit 1
+    }
+  fi
+  echo "=== Installing: $label ==="
+
+  HOME="$temp_home" rake -f "$temp_repo/Rakefile" install --quiet
+
+  output=$(HOME="$temp_home" bash -i -c 'exit' 2>&1 | grep -Ev "no job control|^exit$" || true)
+  if [ -n "$output" ]; then
+    echo "FAIL: bash produced unexpected output after installing $rev:"
+    echo "$output"
+    exit 1
+  fi
+
+  if [ -f "$temp_repo/zshrc" ]; then
+    output=$(HOME="$temp_home" zsh -i -c 'exit' 2>&1 || true)
+    if [ -n "$output" ]; then
+      echo "FAIL: zsh produced unexpected output after installing $rev:"
+      echo "$output"
+      exit 1
+    fi
+  fi
+
+  echo "  OK"
+done
