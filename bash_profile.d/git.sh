@@ -30,6 +30,7 @@ gtc() {
 }
 # git touch changed main: Like gtc but looks at everything changed main..HEAD
 gtcm() {
+  # shellcheck disable=SC2046 # word splitting is intentional, each file is a separate arg
   touch -c $(git diff --name-only "$(git_main_branch)...")
 }
 
