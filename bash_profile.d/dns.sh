@@ -5,7 +5,12 @@ dns() {
   echo "Available"
 }
 
-# official way to flush dns on OS X 10.7+
+# official way to flush dns on macOS
 dns_flush() {
-  sudo discoveryutil mdnsflushcache || sudo killall -HUP mDNSResponder
+  if sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder; then
+    echo "DNS cache flushed."
+  else
+    echo "ERROR: DNS cache flush failed."
+    return 1
+  fi
 }
