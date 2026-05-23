@@ -36,6 +36,19 @@ task :install do
     ") || abort
   end
 
+  dotfiles_dir = File.expand_path('.')
+  Dir.glob("#{home}/.*").each do |link|
+    next unless File.symlink?(link)
+    target = File.readlink(link)
+    target = File.expand_path(target, File.dirname(link))
+    next unless target.start_with?(dotfiles_dir + '/')
+    name = File.basename(link).sub(/^\./, '')
+    unless LINK_FILES.include?(name)
+      puts "Removing stale symlink #{link}"
+      File.delete(link)
+    end
+  end
+
   LINK_FILES.each do |file|
     nice_symlink(file, "#{home}/.#{file}")
   end
