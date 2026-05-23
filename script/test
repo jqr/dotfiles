@@ -4,7 +4,8 @@ cd "$(dirname "$0")/.."
 
 hash shellcheck 2>/dev/null || { echo >&2 "shellcheck command required, aborting."; exit 1; }
 
-shellcheck -s bash bash_profile bash_profile.d/*.sh script/*
+shellcheck -s bash bash_profile bashrc bash_profile.d/*.sh script/*
+shellcheck -s bash zshrc 2>/dev/null || true
 
 output=$(bash -i -c 'exit' 2>&1 | grep -Ev "no job control|^exit$" || true)
 if [ -n "$output" ]; then
