@@ -26,7 +26,16 @@ if [ -n "$WORKSPACE_PATH" ]; then
   }
 fi
 
-if [ -n "$WORKSPACE_PATH" ] && [ -n "$TERM_PROGRAM" ]; then
+if [ -n "$ZSH_VERSION" ]; then
+  setopt PROMPT_SUBST
+  if [ -n "$WORKSPACE_PATH" ] && [ -n "$TERM_PROGRAM" ]; then
+    PS1="$RED\$(prompt_path) $LIGHTRED\$(current_git_branch)\$(git_special) $LIGHTRED%% $NC"
+  elif [ "$SSH_TTY" ]; then
+    PS1="$RED%n@%m $RED\$(prompt_path) $LIGHTRED\$(current_git_branch)\$(git_special) $LIGHTRED%% $NC"
+  else
+    PS1="$GREEN%m $RED\$(prompt_path) $LIGHTRED\$(current_git_branch)\$(git_special) $LIGHTRED%% $NC"
+  fi
+elif [ -n "$WORKSPACE_PATH" ] && [ -n "$TERM_PROGRAM" ]; then
   PS1="$RED\$(prompt_path) $LIGHTRED\$(current_git_branch)\$(git_special) $LIGHTRED$ $NC"
 elif [ "$SSH_TTY" ]; then
   PS1="$RED\u@\h $RED\$(prompt_path) $LIGHTRED\$(current_git_branch)\$(git_special) $LIGHTRED$ $NC"
