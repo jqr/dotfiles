@@ -6,7 +6,7 @@ def aorta(obj)
   tempfile = File.join('/tmp',"yobj_#{ Time.now.to_i }")
   File.open( tempfile, 'w' ) { |f| f << obj.to_yaml }
   system( "#{ ENV['EDITOR'] || 'vi' } #{ tempfile }" )
-  return obj unless File.exists?( tempfile )
+  return obj unless File.respond_to?(:exists?) ? File.exists?(tempfile) : File.exist?(tempfile)
   content = YAML::load( File.open( tempfile ) )
   File.delete( tempfile )
   content

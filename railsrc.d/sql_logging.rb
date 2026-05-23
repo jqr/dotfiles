@@ -3,7 +3,11 @@ require 'active_record'
 
 def active_record_log(stream)
   ActiveRecord::Base.logger = Logger.new(stream)
-  ActiveRecord::Base.clear_all_connections!
+  if ActiveRecord::Base.respond_to?(:clear_all_connections!)
+    ActiveRecord::Base.clear_all_connections!
+  else
+    ActiveRecord::Base.clear_all_connections
+  end
   nil
 end
 
