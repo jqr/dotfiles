@@ -6,5 +6,5 @@
 - https://rubygems.org
 :backtrace: false
 :bulk_threshold: 1000
-gem: --no-ri --no-rdoc
+gem: --no-document
 # END GENERATED
