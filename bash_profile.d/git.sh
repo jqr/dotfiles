@@ -193,6 +193,7 @@ gcf() {
     if git remote get-url origin &>/dev/null; then
       range="origin/$(current_git_branch).."
     fi
+    # shellcheck disable=SC2086 # range must expand to nothing when empty, not ""
     id=$(gl --color=always $range | fzf --ansi --no-sort --layout=reverse | sed 's/\x1b\[[0-9;]*m//g' | awk '{print $1}')
     [ -z "$id" ] && return
   else
