@@ -1,1 +1,1 @@
-PATH="$(brew --prefix)/opt/python/libexec/bin:$PATH"
+PATH="/opt/homebrew/opt/python/libexec/bin:$PATH"
