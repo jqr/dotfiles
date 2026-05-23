@@ -69,9 +69,9 @@ task :install do
         insert + "\n" + contents
       end
 
-    File.open("#{home}/.#{file}", 'w') do |f|
-      f.write(output)
-    end
+    tmpfile = "#{home}/.#{file}.tmp"
+    File.write(tmpfile, output)
+    File.rename(tmpfile, "#{home}/.#{file}")
   end
 end
 
