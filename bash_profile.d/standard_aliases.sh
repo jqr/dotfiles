@@ -18,7 +18,7 @@ export LSCOLORS=gxgxcxdxbxegedabagacad
 
 alias c="code"
 alias s="subl"
-alias a="atom"
+alias z="zed"
 alias e='$EDITOR'
 alias nano='nano -w'
 alias o='open'
