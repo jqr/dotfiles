@@ -1,13 +1,6 @@
 def find_user(term)
   @user_find_model ||=
-    eval(
-      %w(Character User Person).detect do |name|
-        begin
-          eval(name)
-        rescue
-        end
-      end
-    )
+    %w(User Person).detect { |name| Object.const_defined?(name) }&.then { |name| Object.const_get(name) }
 
   @user_find_method ||=
     %w(login name).detect do |name|
