@@ -31,7 +31,8 @@ echo "Testing upgrade from $total milestones (${min_gap}+ day gaps) to current..
 echo ""
 
 results_dir=$(mktemp -d)
-trap "rm -rf $results_dir" EXIT
+# shellcheck disable=SC2064 # intentional: expand path now so cleanup uses the right dir
+trap "rm -rf ${results_dir:?}" EXIT
 
 test_milestone() {
   local current_hash="$1"
@@ -48,7 +49,7 @@ test_milestone() {
   rsync -a --exclude=.git "$repo_dir/" "$temp_repo/"
   HOME="$temp_home" rake -f "$temp_repo/Rakefile" install --quiet >/dev/null 2>&1 || {
     echo "rake install failed" > "$result_file.fail"
-    rm -rf "$temp_repo" "$temp_home"
+    rm -rf "${temp_repo:?}" "${temp_home:?}"
     return
   }
 
@@ -56,7 +57,7 @@ test_milestone() {
   output=$(HOME="$temp_home" bash -i -c 'exit' 2>&1 | grep -Ev "no job control|^exit$" || true)
   if [ -n "$output" ]; then
     echo "bash: $output" > "$result_file.fail"
-    rm -rf "$temp_repo" "$temp_home"
+    rm -rf "${temp_repo:?}" "${temp_home:?}"
     return
   fi
 
@@ -64,13 +65,13 @@ test_milestone() {
     output=$(HOME="$temp_home" zsh -i -c 'exit' 2>&1 || true)
     if [ -n "$output" ]; then
       echo "zsh: $output" > "$result_file.fail"
-      rm -rf "$temp_repo" "$temp_home"
+      rm -rf "${temp_repo:?}" "${temp_home:?}"
       return
     fi
   fi
 
   touch "$result_file.ok"
-  rm -rf "$temp_repo" "$temp_home"
+  rm -rf "${temp_repo:?}" "${temp_home:?}"
 }
 
 pids=()

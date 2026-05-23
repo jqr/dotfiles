@@ -18,7 +18,8 @@ fi
 
 temp_home=$(mktemp -d)
 temp_repo=$(mktemp -d)
-trap "rm -rf $temp_home $temp_repo" EXIT
+# shellcheck disable=SC2064 # intentional: expand paths now so cleanup uses the right dirs
+trap "rm -rf ${temp_home:?} ${temp_repo:?}" EXIT
 
 git clone --quiet "$repo_dir" "$temp_repo"
 
