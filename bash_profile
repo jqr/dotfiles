@@ -1,9 +1,16 @@
-export PATH=/opt/homebrew/bin:usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin:$PATH
 if which rbenv > /dev/null; then
   eval "$(rbenv init -)"
 fi
-export PATH="bin:~/bin:$PATH"
-shopt -s checkhash
+
+PATH=/opt/homebrew/bin:$PATH
+PATH=/usr/local/bin:$PATH
+PATH=/usr/local/sbin:$PATH
+PATH=/usr/local/share/npm/bin:$PATH
+PATH=~/.cargo/bin:$PATH
+PATH=~/.local/bin:$PATH
+PATH=bin:~/bin:$PATH
+export PATH
+shopt -s checkhash # force path search on stale cache detected
 
 if [[ -s ~/perl5/perlbrew/etc/bashrc ]]; then
   source ~/perl5/perlbrew/etc/bashrc
