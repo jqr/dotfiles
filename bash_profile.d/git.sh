@@ -30,8 +30,7 @@ gtc() {
 }
 # git touch changed main: Like gtc but looks at everything changed main..HEAD
 gtcm() {
-  echo "NOT YET"
-  return 1
+  touch -c $(git diff --name-only "$(git_main_branch)...")
 }
 
 _git_require_origin() {
