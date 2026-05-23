@@ -90,9 +90,9 @@ glpm() {
 alias glg='gl --graph --branches'
 
 # git stash: get it? adds everything changed to the stash, including untracked files.
-alias "g{"='echo -n "Name this stash (optional): "; read name; if [[ -n $name ]]; then git stash save --include-untracked "$name"; else git stash --include-untracked; fi'
+alias "g{"='echo -n "Name this stash (optional): "; read -r name; if [[ -n $name ]]; then git stash save --include-untracked "$name"; else git stash --include-untracked; fi'
 # git stash patch: ... but select patches interactively.
-alias "g{p"='echo -n "Name this stash (optional): "; read name; if [[ -n $name ]]; then git stash save --patch "$name"; else git stash --patch; fi'
+alias "g{p"='echo -n "Name this stash (optional): "; read -r name; if [[ -n $name ]]; then git stash save --patch "$name"; else git stash --patch; fi'
 # git stash staged: ... but select patches which are staged.
 alias "g{s"='git stash --staged'
 # git unstash: unstash the most recent stash.
