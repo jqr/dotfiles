@@ -162,9 +162,11 @@ complete -o default -o nospace -F _git_add gaa
 # git add patch: interactively select things to add.
 alias gap='git add -p'
 # git add patch wildcard: select changed files by wildcard
-gap*() {
+gapw() {
   gap "*$1*"
 }
+# shellcheck disable=SC2211,SC1083 # bash accepts * in function names despite being a glob character
+alias 'gap*'=gapw
 
 # git commit: open my editor with a diff and let me write up a description, ^C if you see more in the diff than you wanted.
 alias gc='git commit -v'
