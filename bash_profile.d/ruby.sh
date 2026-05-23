@@ -31,5 +31,5 @@ export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 # rtdm: rails test diff main
 rtdm() {
-  rails test $(git diff $(git_main_branch) --name-status | grep -E $'^[^D]\t(test|spec)/.*\.rb')
+  rails test $(git diff "$(git_main_branch)" --name-status | grep -E $'^[^D]\t(test|spec)/.*\.rb')
 }
