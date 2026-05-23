@@ -1,6 +1,6 @@
 require 'pathname'
 
-LINK_FILES = %w(irbrc irbrc.d pryrc railsrc railsrc.d aprc bash_profile bashrc bash_profile.d zshrc editrc inputrc ackrc gitignore gitattributes)
+LINK_FILES = %w(irbrc irbrc.d pryrc railsrc railsrc.d bash_profile bashrc bash_profile.d zshrc editrc inputrc ackrc gitignore gitattributes)
 INSERT_FILES = %w(gemrc gitconfig)
 
 def stop_error(message)
