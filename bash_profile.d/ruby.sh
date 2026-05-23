@@ -1,6 +1,11 @@
-if which rbenv > /dev/null; then
-  eval "$(rbenv init -)"
+if type rv > /dev/null 2>&1; then
+  eval "$(rv shell init bash)"
+  eval "$(rv shell completions bash)"
 fi
+
+#if which rbenv > /dev/null 2>&1; then
+#  eval "$(rbenv init -)"
+#fi
 
 # Inspiration from http://github.com/hashrocket/dotmatrix/blob/master/.hashrc
 
