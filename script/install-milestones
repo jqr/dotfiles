@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+
+cd "$(dirname "$0")/.."
+
+min_gap="${1:-14}"
+
+prev_hash=""
+prev_timestamp=""
+
+while read -r hash timestamp; do
+  if [ -z "$prev_hash" ]; then
+    prev_hash="$hash"
+    prev_timestamp="$timestamp"
+    continue
+  fi
+
+  gap=$(( (timestamp - prev_timestamp) / 86400 ))
+  if [ "$gap" -ge "$min_gap" ]; then
+    git log --format="%h %ai" -1 "$prev_hash"
+  fi
+
+  prev_hash="$hash"
+  prev_timestamp="$timestamp"
+done < <(git log --format='%H %at' --reverse)
+
+git log --format="%h %ai" -1 "$prev_hash"

@@ -16,7 +16,6 @@ def nice_symlink(target, link)
     stop_error("File exists: #{link}")
   elsif !File.exist?(link)
     File.symlink(target, link)
-    puts
   end
 end
 

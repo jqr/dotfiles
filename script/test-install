@@ -4,7 +4,16 @@ set -e
 repo_dir="$(cd "$(dirname "$0")/.." && pwd)"
 
 if [ $# -eq 0 ]; then
-  set -- HEAD
+  echo "Usage: script/test-install <rev> [<rev> ...]"
+  echo ""
+  echo "Installs each revision in order into a temporary HOME and"
+  echo "verifies bash and zsh start cleanly after each step."
+  echo "Use '.' for the current working tree."
+  echo ""
+  echo "Examples:"
+  echo "  script/test-install .              # test working tree"
+  echo "  script/test-install HEAD~1 HEAD .  # test upgrade path"
+  exit 1
 fi
 
 temp_home=$(mktemp -d)

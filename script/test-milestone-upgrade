@@ -1,0 +1,67 @@
+#!/bin/bash
+set -e
+
+repo_dir="$(cd "$(dirname "$0")/.." && pwd)"
+
+if [ $# -eq 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+  echo "Usage: script/test-milestone-upgrade <days>"
+  echo ""
+  echo "For each milestone commit (settled for at least <days> days),"
+  echo "installs that version then upgrades to the current working tree."
+  echo "Verifies bash and zsh start cleanly after upgrade."
+  echo ""
+  echo "Examples:"
+  echo "  script/test-milestone-upgrade 30   # 30-day milestones"
+  echo "  script/test-milestone-upgrade 90   # 90-day milestones"
+  exit 1
+fi
+
+min_gap="$1"
+
+green='\033[0;32m'
+red='\033[0;31m'
+yellow='\033[0;33m'
+dim='\033[2m'
+nc='\033[0m'
+
+milestones=$("$repo_dir/script/install-milestones" "$min_gap")
+
+temp_repo=$(mktemp -d)
+trap "rm -rf $temp_repo" EXIT
+git clone --quiet "$repo_dir" "$temp_repo"
+
+while read -r current_hash current_date current_time rest; do
+
+  temp_home=$(mktemp -d)
+
+  echo -ne "${yellow}${current_date} ${current_time}${nc} ${dim}${current_hash}${nc} -> current ... "
+
+  git -C "$temp_repo" checkout --quiet "$current_hash" -- .
+  HOME="$temp_home" rake -f "$temp_repo/Rakefile" install --quiet >/dev/null 2>&1 || true
+
+  rsync -a --exclude=.git "$repo_dir/" "$temp_repo/"
+  HOME="$temp_home" rake -f "$temp_repo/Rakefile" install --quiet >/dev/null 2>&1
+
+  output=$(HOME="$temp_home" bash -i -c 'exit' 2>&1 | grep -Ev "no job control|^exit$" || true)
+  if [ -n "$output" ]; then
+    echo -e "${red}FAIL${nc}"
+    echo "  bash produced unexpected output:"
+    echo "  $output"
+    rm -rf "$temp_home"
+    exit 1
+  fi
+
+  if [ -f "$temp_repo/zshrc" ]; then
+    output=$(HOME="$temp_home" zsh -i -c 'exit' 2>&1 || true)
+    if [ -n "$output" ]; then
+      echo -e "${red}FAIL${nc}"
+      echo "  zsh produced unexpected output:"
+      echo "  $output"
+      rm -rf "$temp_home"
+      exit 1
+    fi
+  fi
+
+  rm -rf "$temp_home"
+  echo -e "${green}OK${nc}"
+done <<< "$milestones"
