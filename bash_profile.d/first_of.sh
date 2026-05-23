@@ -6,6 +6,7 @@ first_of() {
     local arg
     arg="$1"
     shift
+    # shellcheck disable=SC2001 # ${var%%} can't replace sed here, arg may contain multiple spaces
     if command -v "$(echo "$arg" | sed 's/ .*//')" >> /dev/null; then
       echo "$arg"
     else
