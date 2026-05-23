@@ -181,8 +181,21 @@ complete -o default -o nospace -F _git_add gca
 # git commit fixup: use --fixup on a previous commit and autorebase.
 gcf() {
   local id="$1"
-  shift
-  git commit --fixup="$id" "$@" && git rebase -i "$id~1"
+  if [ -z "$id" ]; then
+    if [ -z "$(git diff --cached --name-only)" ]; then
+      echo "ERROR: No staged changes to fixup."
+      return 1
+    fi
+    local range
+    if git remote get-url origin &>/dev/null; then
+      range="origin/$(current_git_branch).."
+    fi
+    id=$(gl --color=always $range | fzf --ansi --no-sort --layout=reverse | sed 's/\x1b\[[0-9;]*m//g' | awk '{print $1}')
+    [ -z "$id" ] && return
+  else
+    shift
+  fi
+  git commit --fixup="$id" "$@" && GIT_SEQUENCE_EDITOR=true git rebase -i --autosquash "$id~1"
 }
 
 # git checkout: switch branches or revert changes to a file, but also detect branches that begin with origin/ which is autocompleteable and make local branch of the same name.
