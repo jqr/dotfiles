@@ -18,7 +18,7 @@ touch() {
 }
 
 myip() {
-  curl --silent --fail 'ifconfig.co'
+  curl --silent --fail --max-time 5 'https://ifconfig.co'
 }
 
 _ssh_hosts() {
