@@ -244,7 +244,9 @@ function gu() {
 }
 
 # git rebase interactive: opens your editor with a list of commits that haven't been pushed, then allows you to edit/remove/squash them, use gcam to modify commits and grc to continue, git rebase --abort to GTFO.
-alias gri='git rebase -i ${1:HEAD~$(git_commits_ahead | sed "s/[^0-9]//")}'
+gri() {
+  git rebase -i "${1:-HEAD~$(git_commits_ahead | sed "s/[^0-9]//")}"
+}
 # git rebase continue: continue on once you're satisified with changes to the current commit.
 alias grc='git rebase --continue'
 
