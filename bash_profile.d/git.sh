@@ -203,7 +203,6 @@ gco() {
   if [[ $1 == origin/* ]]; then
     local local_branch
     local_branch="${1//origin\//}"
-    echo local_branch
     git checkout "$local_branch" "${@:2}"
   else
     git checkout "$@"
