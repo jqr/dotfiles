@@ -299,7 +299,7 @@ _git_protected_branch_filter() {
 gbdm() {
   local worktree_branches
   worktree_branches=$(git worktree list --porcelain | grep '^branch ' | sed 's#branch refs/heads/##')
-  git branch --merged | grep -v "*" | grep -ve "^+" | grep -ve "^\s*$(git_main_branch)$" | _git_protected_branch_filter | while read -r branch; do
+  git branch --merged | grep --fixed-strings -v "*" | grep -ve "^+" | grep -ve "^\s*$(git_main_branch)$" | _git_protected_branch_filter | while read -r branch; do
     if ! echo "$worktree_branches" | grep -qxF "$branch"; then
       git branch -d "$branch"
     fi
