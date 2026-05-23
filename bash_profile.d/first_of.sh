@@ -13,6 +13,6 @@ first_of() {
       first_of "$@"
     fi
   else
-    exit 1
+    return 1
   fi
 }
