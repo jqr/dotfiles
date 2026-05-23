@@ -32,8 +32,15 @@ trap "rm -rf ${temp_home:?} ${temp_repo:?}" EXIT
 git clone --quiet "$repo_dir" "$temp_repo"
 
 if [ "$fresh" = false ]; then
-  echo "# user gemrc content" > "$temp_home/.gemrc"
-  echo "# user gitconfig content" > "$temp_home/.gitconfig"
+  for seed_file in .gemrc .gitconfig; do
+    cat > "$temp_home/$seed_file" <<'SEED'
+# user pre content
+# START GENERATED
+# old generated content
+# END GENERATED
+# user post content
+SEED
+  done
 fi
 
 revs=("$@")
@@ -100,9 +107,19 @@ for rev in "$@"; do
         echo "FAIL: $insert_file missing generated block after installing $rev"
         exit 1
       fi
-      if [ "$fresh" = false ] && ! grep -q "# user .* content" "$temp_home/$insert_file"; then
-        echo "FAIL: $insert_file lost user content after installing $rev"
-        exit 1
+      if [ "$fresh" = false ]; then
+        if ! grep -q "# user pre content" "$temp_home/$insert_file"; then
+          echo "FAIL: $insert_file lost content before generated block after installing $rev"
+          exit 1
+        fi
+        if ! grep -q "# user post content" "$temp_home/$insert_file"; then
+          echo "FAIL: $insert_file lost content after generated block after installing $rev"
+          exit 1
+        fi
+        if grep -q "# old generated content" "$temp_home/$insert_file"; then
+          echo "FAIL: $insert_file still contains old generated content after installing $rev"
+          exit 1
+        fi
       fi
     fi
   done
