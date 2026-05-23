@@ -19,9 +19,9 @@ prompt_path() {
 if [ -n "$WORKSPACE_PATH" ]; then
   cd() {
     if [ $# -eq 0 ]; then
-      builtin cd "$WORKSPACE_PATH"
+      builtin cd "$WORKSPACE_PATH" || return
     else
-      builtin cd "$@"
+      builtin cd "$@" || return
     fi
   }
 fi
