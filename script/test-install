@@ -53,5 +53,38 @@ for rev in "$@"; do
     fi
   fi
 
+  # Verify key function is defined
+  output=$(HOME="$temp_home" bash -i -c 'type gs' 2>&1 | grep -Ev "no job control|^exit$" || true)
+  if ! echo "$output" | grep -q "function\|alias"; then
+    echo "FAIL: gs not defined after installing $rev"
+    exit 1
+  fi
+
+  # Verify completion is loaded
+  output=$(HOME="$temp_home" bash -i -c 'complete -p gd' 2>&1 | grep -Ev "no job control|^exit$" || true)
+  if ! echo "$output" | grep -q "complete"; then
+    echo "FAIL: gd completion not loaded after installing $rev"
+    exit 1
+  fi
+
+  # Verify EDITOR is set
+  output=$(HOME="$temp_home" bash -i -c 'echo "$EDITOR"' 2>&1 | grep -Ev "no job control|^exit$" || true)
+  if [ -z "$output" ]; then
+    echo "FAIL: EDITOR not set after installing $rev"
+    exit 1
+  fi
+
+  # Verify no stale symlinks pointing into our repo
+  dotfiles_dir=$(cd "$temp_repo" && pwd -P)
+  for link in "$temp_home"/.*; do
+    [ -L "$link" ] || continue
+    target=$(readlink "$link")
+    target=$(cd "$(dirname "$link")" && cd "$(dirname "$target")" && echo "$(pwd -P)/$(basename "$target")")
+    if [[ "$target" == "$dotfiles_dir/"* ]] && [ ! -e "$link" ]; then
+      echo "FAIL: stale symlink $link -> $target after installing $rev"
+      exit 1
+    fi
+  done
+
   echo "  OK"
 done
