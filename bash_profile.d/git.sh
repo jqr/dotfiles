@@ -31,7 +31,7 @@ gtc() {
 # git touch changed main: Like gtc but looks at everything changed main..HEAD
 gtcm() {
   echo "NOT YET"
-  exit 1
+  return 1
 }
 
 _git_require_origin() {
@@ -146,7 +146,7 @@ function gdos() {
 
 # git diff main: show diff between this branch and main.
 gdm() {
-  gd "$(git_main_branch)..." $@
+  gd "$(git_main_branch)..." "$@"
 }
 # git diff main stats: ... which files and how much?
 gdms() {
