@@ -1,3 +1,7 @@
+if which rbenv > /dev/null; then
+  eval "$(rbenv init -)"
+fi
+
 # Inspiration from http://github.com/hashrocket/dotmatrix/blob/master/.hashrc
 
 alias r='rails'

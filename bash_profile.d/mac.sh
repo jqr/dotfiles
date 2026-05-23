@@ -1,3 +1,5 @@
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 alias openports='sudo lsof -iTCP -sTCP:LISTEN -P'
 
 # http://superuser.com/questions/52483/terminal-tips-and-tricks-for-mac-os-x

@@ -1,7 +1,3 @@
-if which rbenv > /dev/null; then
-  eval "$(rbenv init -)"
-fi
-
 PATH=/opt/homebrew/bin:$PATH
 PATH=/usr/local/bin:$PATH
 PATH=/usr/local/sbin:$PATH
