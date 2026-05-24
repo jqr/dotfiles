@@ -10,7 +10,7 @@ if [ "${1:-}" = "--fresh" ]; then
 fi
 
 if [ $# -eq 0 ]; then
-  echo "Usage: script/test-install [--fresh] <rev> [<rev> ...]"
+  echo "Usage: bin/test-install [--fresh] <rev> [<rev> ...]"
   echo ""
   echo "Installs each revision in order into a temporary HOME and"
   echo "verifies bash and zsh start cleanly after each step."
@@ -18,9 +18,9 @@ if [ $# -eq 0 ]; then
   echo "Use --fresh to start with an empty HOME (no pre-existing config)."
   echo ""
   echo "Examples:"
-  echo "  script/test-install .              # test working tree"
-  echo "  script/test-install --fresh .      # test fresh install"
-  echo "  script/test-install HEAD~1 HEAD .  # test upgrade sequence"
+  echo "  bin/test-install .              # test working tree"
+  echo "  bin/test-install --fresh .      # test fresh install"
+  echo "  bin/test-install HEAD~1 HEAD .  # test upgrade sequence"
   exit 1
 fi
 
@@ -59,7 +59,9 @@ for rev in "$@"; do
   fi
   echo "=== Installing: $label ==="
 
-  if [ -x "$temp_repo/script/install" ]; then
+  if [ -x "$temp_repo/bin/install" ]; then
+    HOME="$temp_home" "$temp_repo/bin/install"
+  elif [ -x "$temp_repo/script/install" ]; then
     HOME="$temp_home" "$temp_repo/script/install"
   else
     HOME="$temp_home" rake -f "$temp_repo/Rakefile" install --quiet

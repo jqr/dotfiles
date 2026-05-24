@@ -2,7 +2,7 @@
 set -e
 
 if [ $# -lt 2 ] || [ $# -gt 4 ]; then
-  echo "Usage: script/insert-content <source> <target> [<start-marker> <end-marker>]"
+  echo "Usage: bin/upsert-content <source> <target> [<start-marker> <end-marker>]"
   echo ""
   echo "Inserts the content of <source> into <target>, replacing any"
   echo "existing block between the start and end markers."

@@ -65,7 +65,7 @@ old content
 # END GENERATED
 user post
 EOF
-stderr=$(script/insert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
+stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
 assert_file "replace existing block" "$work/target" "user pre
 # START GENERATED
 alpha
@@ -79,7 +79,7 @@ cat > "$work/target" <<'EOF'
 user config
 more config
 EOF
-stderr=$(script/insert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
+stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
 assert_file "no existing block appends" "$work/target" "user config
 more config
 # START GENERATED
@@ -90,7 +90,7 @@ assert_stderr "no existing block warns" "first time"
 
 # --- Test: no existing file ---
 rm -f "$work/target"
-stderr=$(script/insert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
+stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
 assert_file "no existing file" "$work/target" "# START GENERATED
 alpha
 bravo
@@ -99,7 +99,7 @@ assert_stderr "no existing file warns" "first time"
 
 # --- Test: empty target file ---
 true > "$work/target"
-stderr=$(script/insert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
+stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
 assert_file "empty target file" "$work/target" "# START GENERATED
 alpha
 bravo
@@ -114,8 +114,8 @@ old content
 # END GENERATED
 user post
 EOF
-script/insert-content "$work/source" "$work/target" 2>/dev/null
-script/insert-content "$work/source" "$work/target" 2>/dev/null
+bin/upsert-content "$work/source" "$work/target" 2>/dev/null
+bin/upsert-content "$work/source" "$work/target" 2>/dev/null
 assert_file "idempotent after two runs" "$work/target" "user pre
 # START GENERATED
 alpha
@@ -131,7 +131,7 @@ old stuff
 # END dotfiles
 after
 EOF
-stderr=$(script/insert-content "$work/source" "$work/target" "# BEGIN dotfiles" "# END dotfiles" 2>&1 >/dev/null || true)
+stderr=$(bin/upsert-content "$work/source" "$work/target" "# BEGIN dotfiles" "# END dotfiles" 2>&1 >/dev/null || true)
 assert_file "custom markers" "$work/target" "before
 # START GENERATED
 alpha
@@ -154,7 +154,7 @@ old
 # END GENERATED
 user post
 EOF
-stderr=$(script/insert-content "$work/source-trailing" "$work/target" 2>&1 >/dev/null || true)
+stderr=$(bin/upsert-content "$work/source-trailing" "$work/target" 2>&1 >/dev/null || true)
 assert_file "trailing blank lines in source" "$work/target" "user pre
 # START GENERATED
 content
@@ -170,7 +170,7 @@ old content
 user post
 EOF
 cp "$work/target" "$work/target-backup"
-stderr=$(script/insert-content "$work/source" "$work/target" 2>&1 >/dev/null) && status=0 || status=$?
+stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null) && status=0 || status=$?
 if [ "$status" -ne 0 ]; then
   echo "  OK: start only errors"
   pass=$((pass + 1))
@@ -189,7 +189,7 @@ old content
 user post
 EOF
 cp "$work/target" "$work/target-backup"
-stderr=$(script/insert-content "$work/source" "$work/target" 2>&1 >/dev/null) && status=0 || status=$?
+stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null) && status=0 || status=$?
 if [ "$status" -ne 0 ]; then
   echo "  OK: end only errors"
   pass=$((pass + 1))
@@ -207,7 +207,7 @@ user pre
 old
 # END GENERATED
 EOF
-stderr=$(script/insert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
+stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
 assert_file "content only before block" "$work/target" "user pre
 # START GENERATED
 alpha
@@ -221,7 +221,7 @@ old
 # END GENERATED
 user post
 EOF
-stderr=$(script/insert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
+stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
 assert_file "content only after block" "$work/target" "# START GENERATED
 alpha
 bravo

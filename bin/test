@@ -6,17 +6,17 @@ trap 'echo "FAILED (exit code: $?)"' ERR
 
 hash shellcheck 2>/dev/null || { echo >&2 "shellcheck command required, aborting."; exit 1; }
 
-shellcheck -s bash bash_profile bashrc shell.d/*.sh script/*
+shellcheck -s bash bash_profile bashrc shell.d/*.sh bin/*
 shellcheck -s bash zshrc 2>/dev/null || true
 
 bash -i -c 'exit' 2>&1 | grep -Ev "no job control|^exit$" || true
 zsh -i -c 'exit' || echo "zsh -i had a non-zero exit code"
 
-script/test-insert-content
-script/test-install --fresh .
+bin/test-upsert-content
+bin/test-install --fresh .
 
 # Test upgrade from recent milestones in parallel
-milestones=$(script/install-milestones 30 | tail -5)
+milestones=$(bin/list-milestones 30 | tail -5)
 pids=()
 results_dir=$(mktemp -d)
 # shellcheck disable=SC2064 # intentional: expand path now so cleanup uses the right dir
@@ -24,7 +24,7 @@ trap "rm -rf ${results_dir:?}" EXIT
 
 while read -r hash rest; do
   (
-    if script/test-install "$hash" . >/dev/null 2>&1; then
+    if bin/test-install "$hash" . >/dev/null 2>&1; then
       touch "$results_dir/$hash.ok"
     else
       touch "$results_dir/$hash.fail"

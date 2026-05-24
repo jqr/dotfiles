@@ -5,12 +5,12 @@ Dotfiles for bash/zsh on macOS.
 Symlink all the dotfiles into the appropriate locations:
 
 ```sh
-script/install
+bin/install
 ```
 
 This symlinks config files (`bashrc`, `zshrc`, `gitconfig`, etc.) into your home directory and inserts generated blocks into `~/.gemrc` and `~/.gitconfig`.
 
-Re-run `script/install` after pulling to pick up changes. It will clean up stale symlinks from removed files automatically.
+Re-run `bin/install` after pulling to pick up changes. It will clean up stale symlinks from removed files automatically.
 
 ## How it works
 
@@ -23,8 +23,8 @@ Any files matching `local.*` in `shell.d/` are not tracked by git.
 ## Testing
 
 ```sh
-script/test                          # shellcheck + bash/zsh startup checks
-script/test-install .                # full install test in a temp HOME
-script/test-install HEAD~3 HEAD .    # test an upgrade sequence
-script/test-milestone-upgrade 30     # test upgrading from every 30-day milestone to current
+bin/test                          # shellcheck + bash/zsh startup checks
+bin/test-install .                # full install test in a temp HOME
+bin/test-install HEAD~3 HEAD .    # test an upgrade sequence
+bin/test-milestone-upgrade 30     # test upgrading from every 30-day milestone to current
 ```

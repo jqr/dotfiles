@@ -4,15 +4,15 @@ set -e
 repo_dir="$(cd "$(dirname "$0")/.." && pwd)"
 
 if [ $# -eq 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-  echo "Usage: script/test-milestone-upgrade <days>"
+  echo "Usage: bin/test-milestone-upgrade <days>"
   echo ""
   echo "For each milestone commit (settled for at least <days> days),"
   echo "installs that version then upgrades to the current working tree."
   echo "Verifies bash and zsh start cleanly after upgrade."
   echo ""
   echo "Examples:"
-  echo "  script/test-milestone-upgrade 30   # 30-day milestones"
-  echo "  script/test-milestone-upgrade 90   # 90-day milestones"
+  echo "  bin/test-milestone-upgrade 30   # 30-day milestones"
+  echo "  bin/test-milestone-upgrade 90   # 90-day milestones"
   exit 1
 fi
 
@@ -24,7 +24,7 @@ red='\033[0;31m'
 yellow='\033[0;33m'
 nc='\033[0m'
 
-milestones=$("$repo_dir/script/install-milestones" "$min_gap")
+milestones=$("$repo_dir/bin/list-milestones" "$min_gap")
 total=$(echo "$milestones" | wc -l | tr -d ' ')
 
 echo "Testing upgrade from $total milestones (${min_gap}+ day gaps) to current..."

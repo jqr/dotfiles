@@ -66,5 +66,5 @@ done
 # Insert generated content
 for file in "${INSERT_FILES[@]}"; do
   echo "Insert content into $home/.$file"
-  script/insert-content "$file" "$home/.$file"
+  bin/upsert-content "$file" "$home/.$file"
 done
