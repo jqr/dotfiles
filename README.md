@@ -14,11 +14,11 @@ Re-run `rake install` after pulling to pick up changes. It will clean up stale s
 
 ## How it works
 
-Shell config is modular. `bashrc` and `zshrc` both source every `*.sh` file in `bash_profile.d/`, which includes git aliases, prompt, completions, language version managers, and more. Most files work in both bash and zsh.
+Shell config is modular. `bashrc` and `zshrc` both source every `*.sh` file in `shell.d/`, which includes git aliases, prompt, completions, language version managers, and more. Most files work in both bash and zsh.
 
 ## Local-only modifications
 
-Any files matching `local.*` in `bash_profile.d/` are not tracked by git.
+Any files matching `local.*` in `shell.d/` are not tracked by git.
 
 ## Testing
 

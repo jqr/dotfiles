@@ -1,7 +1,7 @@
 [[ $- != *i* ]] && return
 
 # shellcheck disable=SC1090 # files are dynamic, loaded by glob
-for file in "$HOME"/.bash_profile.d/*.sh; do
+for file in "$HOME"/.shell.d/*.sh; do
   source "$file"
 done
 
