@@ -418,11 +418,10 @@ git_special() {
   local git_st
   git_st=$(git status --short --branch 2>/dev/null)
   if [ -n "$git_st" ]; then
-    local header
-    header=$(echo "$git_st" | head -n 1)
+    local header="${git_st%%$'\n'*}"
     case "$header" in *ahead*)    ahead="${header#*ahead }"; ahead="+${ahead%%[],]*}";; esac
     case "$header" in *behind*)   behind="${header#*behind }"; behind="-${behind%%[],]*}";; esac
-    if [ "$(echo "$git_st" | wc -l)" -gt 1 ]; then
+    if [[ "$git_st" == *$'\n'* ]]; then
       dirty="*"
     fi
   fi

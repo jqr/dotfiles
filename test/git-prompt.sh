@@ -150,6 +150,12 @@ assert "git_special: ahead + behind + dirty" \
 assert "git_special: ahead + behind" \
   "(+1-1)" "$(run 'git_special')"
 
+# Verify git_special doesn't break with many dirty files (echo|head broken pipe)
+(cd "$repo" && for i in $(seq 1 500); do echo x > "bulk_$i.txt"; done)
+assert "git_special: many dirty files no stderr" \
+  "" "$(run 'git_special' 2>&1 >/dev/null)"
+(cd "$repo" && rm -f bulk_*.txt)
+
 # Verify git_special agrees with individual helpers
 (cd "$repo" && echo "check" > agree.txt)
 combined="$(run 'git_special')"
