@@ -2,3 +2,4 @@
 Thumbs.db
 .claude/*.local.*
 .claude/worktrees
+.direnv
