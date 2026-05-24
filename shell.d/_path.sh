@@ -1,10 +1,3 @@
-path_prepend() {
-  case ":$PATH:" in
-    *:"$1":*) ;;
-    *) PATH="$1:$PATH" ;;
-  esac
-}
-
 path_prepend /opt/homebrew/bin
 path_prepend /usr/local/bin
 path_prepend /usr/local/sbin
