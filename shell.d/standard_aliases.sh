@@ -1,4 +1,4 @@
-alias reload='source ~/.bashrc && echo "Reloaded ~/.bashrc"'
+alias reload='source ~/.${DOTFILES_SHELL}rc && echo "Reloaded ~/.${DOTFILES_SHELL}rc"'
 
 alias ..='cd ..'
 alias ...='cd ../..'

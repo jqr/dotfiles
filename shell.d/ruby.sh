@@ -1,6 +1,6 @@
 if type rv > /dev/null 2>&1; then
-  eval "$(rv shell init bash)"
-  eval "$(rv shell completions bash)"
+  eval "$(rv shell init "$DOTFILES_SHELL")"
+  eval "$(rv shell completions "$DOTFILES_SHELL")"
 elif which rbenv > /dev/null 2>&1; then
   eval "$(rbenv init -)"
 fi
