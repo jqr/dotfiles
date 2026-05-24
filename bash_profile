@@ -5,7 +5,6 @@ if [[ -s ~/perl5/perlbrew/etc/bashrc ]]; then
   source ~/perl5/perlbrew/etc/bashrc
 fi
 
-ulimit -n 10240
 
 # shellcheck disable=SC1090 # path depends on user's home directory
 if [ -f ~/.bashrc ]; then
