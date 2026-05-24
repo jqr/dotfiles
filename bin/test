@@ -17,7 +17,7 @@ test/reload.sh bash
 test/reload.sh zsh
 test/git-prompt.sh bash
 test/git-prompt.sh zsh
-bin/test-install --fresh .
+bin/test-install --fresh . >/dev/null
 
 # Test upgrade from recent milestones in parallel
 milestones=$(bin/list-milestones 30 | tail -5)
