@@ -5,12 +5,12 @@ Dotfiles for bash/zsh on macOS.
 Symlink all the dotfiles into the appropriate locations:
 
 ```sh
-rake install
+script/install
 ```
 
 This symlinks config files (`bashrc`, `zshrc`, `gitconfig`, etc.) into your home directory and inserts generated blocks into `~/.gemrc` and `~/.gitconfig`.
 
-Re-run `rake install` after pulling to pick up changes. It will clean up stale symlinks from removed files automatically.
+Re-run `script/install` after pulling to pick up changes. It will clean up stale symlinks from removed files automatically.
 
 ## How it works
 

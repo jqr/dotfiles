@@ -1,0 +1,70 @@
+#!/bin/bash
+set -e
+
+cd "$(dirname "$0")/.."
+dotfiles_dir=$(pwd -P)
+home="${HOME}"
+
+LINK_FILES=(irbrc irbrc.d pryrc railsrc railsrc.d bash_profile bashrc shell.d zshrc editrc inputrc gitignore gitattributes)
+INSERT_FILES=(gemrc gitconfig)
+
+# Fix master -> main branch rename
+if [ "$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null)" != "refs/remotes/origin/main" ]; then
+  echo "Correcting master -> main branch rename"
+  git branch --move master main
+  git fetch origin
+  git branch --set-upstream-to origin/main main
+  git remote set-head origin --auto
+fi
+
+# Remove stale symlinks pointing into this repo
+for link in "$home"/.*; do
+  [ -L "$link" ] || continue
+  target=$(readlink "$link")
+  # Resolve relative targets
+  case "$target" in
+    /*) ;;
+    *) target="$(cd "$(dirname "$link")" && cd "$(dirname "$target")" && echo "$(pwd -P)/$(basename "$target")")" ;;
+  esac
+  case "$target" in
+    "$dotfiles_dir/"*)
+      name="${link##*/}"
+      name="${name#.}"
+      found=false
+      for f in "${LINK_FILES[@]}"; do
+        if [ "$f" = "$name" ]; then
+          found=true
+          break
+        fi
+      done
+      if [ "$found" = false ]; then
+        echo "Removing stale symlink $link"
+        rm "$link"
+      fi
+      ;;
+  esac
+done
+
+# Create symlinks
+for file in "${LINK_FILES[@]}"; do
+  target="$(pwd -P)/$file"
+  link="$home/.$file"
+  if [ -L "$link" ]; then
+    existing=$(cd "$(dirname "$link")" && cd "$(dirname "$(readlink "$link")")" && echo "$(pwd -P)/$(basename "$(readlink "$link")")")
+    if [ "$existing" = "$target" ]; then
+      continue
+    fi
+  fi
+  if [ -e "$link" ]; then
+    echo "ERROR: File exists: $link" >&2
+    exit 1
+  fi
+  echo "Linking $link => $target"
+  ln -s "$target" "$link"
+done
+
+# Insert generated content
+for file in "${INSERT_FILES[@]}"; do
+  echo "Insert content into $home/.$file"
+  script/insert-content "$file" "$home/.$file"
+done

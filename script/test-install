@@ -59,7 +59,11 @@ for rev in "$@"; do
   fi
   echo "=== Installing: $label ==="
 
-  HOME="$temp_home" rake -f "$temp_repo/Rakefile" install --quiet
+  if [ -x "$temp_repo/script/install" ]; then
+    HOME="$temp_home" "$temp_repo/script/install"
+  else
+    HOME="$temp_home" rake -f "$temp_repo/Rakefile" install --quiet
+  fi
 
   output=$(HOME="$temp_home" bash -i -c 'exit' 2>&1 | grep -Ev "no job control|^exit$" || true)
   if [ -n "$output" ]; then
