@@ -1,53 +1,7 @@
 #!/bin/bash
 set -e
-
-cd "$(dirname "$0")/.."
-
-pass=0
-fail=0
-work=$(mktemp -d)
-# shellcheck disable=SC2064 # intentional: expand path now so cleanup uses the right dir
-trap "rm -rf ${work:?}" EXIT
-
-assert_file() {
-  local label="$1" file="$2" expected="$3"
-  actual=$(cat "$file")
-  if [ "$actual" = "$expected" ]; then
-    echo "  OK: $label"
-    pass=$((pass + 1))
-  else
-    echo "FAIL: $label"
-    echo "  expected:"
-    echo "${expected//$'\n'/$'\n'    }"
-    echo "  actual:"
-    echo "${actual//$'\n'/$'\n'    }"
-    fail=$((fail + 1))
-  fi
-}
-
-assert_stderr() {
-  local label="$1" pattern="$2"
-  if echo "$stderr" | grep -q "$pattern"; then
-    echo "  OK: $label"
-    pass=$((pass + 1))
-  else
-    echo "FAIL: $label (expected stderr matching: $pattern)"
-    echo "  actual stderr: $stderr"
-    fail=$((fail + 1))
-  fi
-}
-
-assert_no_stderr() {
-  local label="$1"
-  if [ -z "$stderr" ]; then
-    echo "  OK: $label"
-    pass=$((pass + 1))
-  else
-    echo "FAIL: $label (expected no stderr)"
-    echo "  actual stderr: $stderr"
-    fail=$((fail + 1))
-  fi
-}
+# shellcheck source=test/helpers.sh
+source "$(dirname "$0")/helpers.sh"
 
 # Source file for tests
 cat > "$work/source" <<'EOF'
@@ -57,7 +11,7 @@ bravo
 # END GENERATED
 EOF
 
-# --- Test: replace existing block ---
+# --- replace existing block ---
 cat > "$work/target" <<'EOF'
 user pre
 # START GENERATED
@@ -72,9 +26,9 @@ alpha
 bravo
 # END GENERATED
 user post"
-assert_no_stderr "replace existing block: no warning"
+assert_empty "replace existing block: no warning" "$stderr"
 
-# --- Test: no existing block (appends) ---
+# --- no existing block (appends) ---
 cat > "$work/target" <<'EOF'
 user config
 more config
@@ -86,27 +40,27 @@ more config
 alpha
 bravo
 # END GENERATED"
-assert_stderr "no existing block warns" "first time"
+assert_match "no existing block warns" "first time" "$stderr"
 
-# --- Test: no existing file ---
+# --- no existing file ---
 rm -f "$work/target"
 stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
 assert_file "no existing file" "$work/target" "# START GENERATED
 alpha
 bravo
 # END GENERATED"
-assert_stderr "no existing file warns" "first time"
+assert_match "no existing file warns" "first time" "$stderr"
 
-# --- Test: empty target file ---
+# --- empty target file ---
 true > "$work/target"
 stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
 assert_file "empty target file" "$work/target" "# START GENERATED
 alpha
 bravo
 # END GENERATED"
-assert_stderr "empty target warns" "first time"
+assert_match "empty target warns" "first time" "$stderr"
 
-# --- Test: idempotent (run twice) ---
+# --- idempotent (run twice) ---
 cat > "$work/target" <<'EOF'
 user pre
 # START GENERATED
@@ -123,7 +77,7 @@ bravo
 # END GENERATED
 user post"
 
-# --- Test: custom markers ---
+# --- custom markers ---
 cat > "$work/target" <<'EOF'
 before
 # BEGIN dotfiles
@@ -138,9 +92,9 @@ alpha
 bravo
 # END GENERATED
 after"
-assert_no_stderr "custom markers: no warning"
+assert_empty "custom markers: no warning" "$stderr"
 
-# --- Test: source with trailing blank lines ---
+# --- source with trailing blank lines ---
 cat > "$work/source-trailing" <<EOF
 # START GENERATED
 content
@@ -160,9 +114,9 @@ assert_file "trailing blank lines in source" "$work/target" "user pre
 content
 # END GENERATED
 user post"
-assert_no_stderr "trailing blank lines: no warning"
+assert_empty "trailing blank lines: no warning" "$stderr"
 
-# --- Test: start marker only, no end ---
+# --- start marker only, no end ---
 cat > "$work/target" <<'EOF'
 user pre
 # START GENERATED
@@ -171,17 +125,11 @@ user post
 EOF
 cp "$work/target" "$work/target-backup"
 stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null) && status=0 || status=$?
-if [ "$status" -ne 0 ]; then
-  echo "  OK: start only errors"
-  pass=$((pass + 1))
-else
-  echo "FAIL: start only should error"
-  fail=$((fail + 1))
-fi
-assert_stderr "start only mentions start marker" "start marker but no end"
+assert "start only errors" "1" "$status"
+assert_match "start only mentions start marker" "start marker but no end" "$stderr"
 assert_file "start only leaves target unchanged" "$work/target" "$(cat "$work/target-backup")"
 
-# --- Test: end marker only, no start ---
+# --- end marker only, no start ---
 cat > "$work/target" <<'EOF'
 user pre
 old content
@@ -190,50 +138,36 @@ user post
 EOF
 cp "$work/target" "$work/target-backup"
 stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null) && status=0 || status=$?
-if [ "$status" -ne 0 ]; then
-  echo "  OK: end only errors"
-  pass=$((pass + 1))
-else
-  echo "FAIL: end only should error"
-  fail=$((fail + 1))
-fi
-assert_stderr "end only mentions end marker" "end marker but no start"
+assert "end only errors" "1" "$status"
+assert_match "end only mentions end marker" "end marker but no start" "$stderr"
 assert_file "end only leaves target unchanged" "$work/target" "$(cat "$work/target-backup")"
 
-# --- Test: content only before block ---
+# --- content only before block ---
 cat > "$work/target" <<'EOF'
 user pre
 # START GENERATED
 old
 # END GENERATED
 EOF
-stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
+bin/upsert-content "$work/source" "$work/target" 2>/dev/null
 assert_file "content only before block" "$work/target" "user pre
 # START GENERATED
 alpha
 bravo
 # END GENERATED"
 
-# --- Test: content only after block ---
+# --- content only after block ---
 cat > "$work/target" <<'EOF'
 # START GENERATED
 old
 # END GENERATED
 user post
 EOF
-stderr=$(bin/upsert-content "$work/source" "$work/target" 2>&1 >/dev/null || true)
+bin/upsert-content "$work/source" "$work/target" 2>/dev/null
 assert_file "content only after block" "$work/target" "# START GENERATED
 alpha
 bravo
 # END GENERATED
 user post"
 
-# --- Summary ---
-echo ""
-total=$((pass + fail))
-if [ "$fail" -eq 0 ]; then
-  echo "All $total tests passed."
-else
-  echo "$pass/$total passed, $fail failed."
-  exit 1
-fi
+test_summary ""

@@ -1,19 +1,16 @@
 #!/bin/bash
 set -e
+# shellcheck source=test/helpers.sh
+source "$(dirname "$0")/helpers.sh"
 
-cd "$(dirname "$0")/.."
-
-shell="${1:?Usage: test-reload <bash|zsh>}"
+shell="${1:?Usage: test/reload.sh <bash|zsh>}"
 case "$shell" in
   bash|zsh) ;;
   *) echo "Unknown shell: $shell"; exit 1 ;;
 esac
 
-pass=0
-fail=0
-work=$(mktemp -d)
 test_file="shell.d/_test_reload.sh"
-# shellcheck disable=SC2064 # intentional: expand path now so cleanup uses the right dir
+# shellcheck disable=SC2064 # intentional: expand path now
 trap "rm -f $test_file; rm -rf ${work:?}" EXIT
 
 # Set up a fake home that sources our dotfiles
@@ -21,19 +18,6 @@ ln -s "$PWD/bash_profile" "$work/.bash_profile"
 ln -s "$PWD/bashrc" "$work/.bashrc"
 ln -s "$PWD/zshrc" "$work/.zshrc"
 ln -s "$PWD/shell.d" "$work/.shell.d"
-
-assert() {
-  local label="$1" expected="$2" actual="$3"
-  if [ "$expected" = "$actual" ]; then
-    echo "  OK: $label"
-    pass=$((pass + 1))
-  else
-    echo "FAIL: $label"
-    echo "  expected: $expected"
-    echo "    actual: $actual"
-    fail=$((fail + 1))
-  fi
-}
 
 run_in_shell() {
   HOME="$work" "$shell" -i -c "$1" 2>/dev/null
@@ -50,6 +34,7 @@ assert "new alias loaded" \
   "original" "$(run_in_shell '__test_alias')"
 assert "new function loaded" \
   "original" "$(run_in_shell '__test_fn')"
+# shellcheck disable=SC2016 # expansion happens inside the subshell
 assert "new export loaded" \
   "original" "$(run_in_shell 'echo $__TEST_VAR')"
 
@@ -77,15 +62,8 @@ assert "removed alias is gone" \
   "" "$(run_in_shell '__test_alias 2>/dev/null || true')"
 assert "removed function is gone" \
   "" "$(run_in_shell '__test_fn 2>/dev/null || true')"
+# shellcheck disable=SC2016 # expansion happens inside the subshell
 assert "removed export is gone" \
   "" "$(run_in_shell 'echo $__TEST_VAR')"
 
-# --- Summary ---
-echo ""
-total=$((pass + fail))
-if [ "$fail" -eq 0 ]; then
-  echo "All $total tests passed ($shell)."
-else
-  echo "$pass/$total passed, $fail failed ($shell)."
-  exit 1
-fi
+test_summary "$shell"
