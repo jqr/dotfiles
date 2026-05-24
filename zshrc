@@ -1,3 +1,5 @@
+# Loaded for every interactive shell.
+
 # shellcheck disable=SC2034 # used by shell.d scripts
 DOTFILES_SHELL=zsh
 

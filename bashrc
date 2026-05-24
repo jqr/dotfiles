@@ -1,3 +1,5 @@
+# Loaded for every interactive shell.
+
 [[ $- != *i* ]] && return
 
 if [[ "$OSTYPE" == darwin* ]] && [[ "$BASH" == /bin/bash ]]; then

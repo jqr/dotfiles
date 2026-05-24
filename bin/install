@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 dotfiles_dir=$(pwd -P)
 home="${HOME}"
 
-LINK_FILES=(irbrc irbrc.d pryrc railsrc railsrc.d bash_profile bashrc shell.d zshrc editrc inputrc gitignore gitattributes)
+LINK_FILES=(irbrc irbrc.d pryrc railsrc railsrc.d bash_profile bashrc shell.d zprofile zshrc editrc inputrc gitignore gitattributes)
 INSERT_FILES=(gemrc gitconfig)
 
 # Fix master -> main branch rename
