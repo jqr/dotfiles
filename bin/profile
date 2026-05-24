@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+cd "$(dirname "$0")/.."
+
+# Separate shell args from repo path
+shells=()
+repo=""
+for arg in "$@"; do
+  case "$arg" in
+    bash|zsh) shells+=("$arg") ;;
+    *) repo="$arg" ;;
+  esac
+done
+
+echo "=== Shell load time ==="
+echo ""
+bin/profile-load "${shells[@]}"
+
+echo ""
+echo ""
+echo "=== Prompt render time ==="
+echo ""
+bin/profile-prompt ${repo:+"$repo"}

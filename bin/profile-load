@@ -26,9 +26,16 @@ profile_shell() {
   echo "$(to_ms "$t")ms $shell -i (total)"
 }
 
-echo "=== bash ==="
-profile_shell bash
-
-echo ""
-echo "=== zsh ==="
-profile_shell zsh
+if [ $# -gt 0 ]; then
+  for s in "$@"; do
+    echo "=== $s ==="
+    profile_shell "$s"
+    echo ""
+  done
+else
+  echo "=== bash ==="
+  profile_shell bash
+  echo ""
+  echo "=== zsh ==="
+  profile_shell zsh
+fi
