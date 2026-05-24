@@ -1,0 +1,127 @@
+#!/bin/bash
+# Profile prompt rendering cost for each shell.
+#
+# Usage: test/prompt-perf.sh [bash|zsh] [repo-path]
+#
+# If no repo path is given, clones rails/rails (cached in ~/.cache/dotfiles).
+# We need a real-world-sized repo (~5k files) because git status cost scales
+# with working tree size — a tiny repo hides the actual prompt overhead.
+#
+# Requires: hyperfine (brew install hyperfine)
+
+set -e
+cd "$(dirname "$0")/.."
+
+hash hyperfine 2>/dev/null || { echo >&2 "hyperfine required: brew install hyperfine"; exit 1; }
+
+shells=""
+repo_arg=""
+for arg in "$@"; do
+  case "$arg" in
+    bash|zsh) shells="$shells $arg" ;;
+    *) repo_arg="$arg" ;;
+  esac
+done
+shells="${shells:- bash zsh}"
+
+work=$(mktemp -d)
+# shellcheck disable=SC2064
+trap "rm -rf ${work:?}" EXIT
+
+ln -s "$PWD/bash_profile" "$work/.bash_profile"
+ln -s "$PWD/bashrc" "$work/.bashrc"
+ln -s "$PWD/zshrc" "$work/.zshrc"
+ln -s "$PWD/shell.d" "$work/.shell.d"
+
+if [ -n "$repo_arg" ]; then
+  repo="$repo_arg"
+else
+  cache_dir="$HOME/.cache/dotfiles/prompt-perf"
+  repo="$cache_dir/rails"
+  if [ -d "$repo/.git" ]; then
+    echo "Using cached rails/rails clone (a large repo for realistic git status times)"
+  else
+    echo "Cloning rails/rails — a large repo for realistic git status times (one-time, cached for future runs)..."
+    mkdir -p "$cache_dir"
+    git clone --depth 1 https://github.com/rails/rails.git "$repo"
+  fi
+fi
+
+repo=$(cd "$repo" && pwd)
+ln -s "$repo" "$work/repo"
+
+file_count=$(git -C "$repo" ls-files | wc -l | tr -d ' ')
+
+benchmark() {
+  local shell="$1"
+
+  # Worst-case preamble: workspace mode with all env vars set.
+  local preamble="export SSH_TTY=/dev/ttys000; export SUPERCONDUCTOR_WORKSPACE_PATH=$repo; export TERM_PROGRAM=Superconductor; export DOTFILES_SHELL=$shell; for f in ~/.shell.d/*.sh; do . \$f; done; cd ~/repo"
+
+  # Discover hooks
+  local hooks=""
+  if [ "$shell" = "zsh" ]; then
+    hooks=$(HOME="$work" zsh -c "$preamble; echo \"\${precmd_functions[*]}\"" 2>/dev/null)
+  else
+    hooks=$(HOME="$work" bash -c "$preamble; echo \"\$PROMPT_COMMAND\"" 2>/dev/null)
+  fi
+
+  local cmds=(
+    -n "prompt_path"        "${preamble}; prompt_path"
+    -n "current_git_branch" "${preamble}; current_git_branch"
+    -n "git_mode"           "${preamble}; git_mode"
+    -n "git_commits_ahead"  "${preamble}; git_commits_ahead"
+    -n "git_commits_behind" "${preamble}; git_commits_behind"
+    -n "git_dirty_state"    "${preamble}; git_dirty_state"
+    -n "git_special"        "${preamble}; git_special"
+  )
+
+  if [ "$shell" = "bash" ] && [ -n "$hooks" ]; then
+    cmds+=(-n "PROMPT_COMMAND" "${preamble}; eval \"\$PROMPT_COMMAND\"")
+  elif [ "$shell" = "zsh" ] && [ -n "$hooks" ]; then
+    cmds+=(-n "precmd hooks" "${preamble}; for fn in \$precmd_functions; do \$fn; done")
+  fi
+
+  local full_cmd
+  if [ "$shell" = "zsh" ]; then
+    full_cmd="${preamble}; for fn in \$precmd_functions; do \$fn 2>/dev/null; done; prompt_path; current_git_branch; git_special"
+  else
+    full_cmd="${preamble}; eval \"\$PROMPT_COMMAND\" 2>/dev/null; prompt_path; current_git_branch; git_special"
+  fi
+  cmds+=(-n "FULL PROMPT" "$full_cmd")
+
+  local json="$work/${shell}.json"
+
+  HOME="$work" hyperfine \
+    --shell="$shell" \
+    --warmup 3 \
+    --style none \
+    --sort mean-time \
+    --reference "${preamble}" \
+    --reference-name "baseline" \
+    --export-json "$json" \
+    "${cmds[@]}"
+
+  echo ""
+  echo "$shell (hooks: ${hooks:-(none)})"
+  python3 -c "
+import json, math
+data = json.load(open('$json'))
+results = data['results']
+base = next(r for r in results if r.get('command_name', r['command']) == 'baseline')
+rows = [(r.get('command_name', r['command']), r['mean'] - base['mean'],
+         math.sqrt((r['stddev'] or 0)**2 + (base['stddev'] or 0)**2))
+        for r in results if r.get('command_name', r['command']) != 'baseline']
+print(f\"  {'':22s} {'mean':>8s}  {'± stddev':>8s}\")
+for name, delta, sd in rows:
+    print(f'  {name:22s} {max(0, delta)*1000:5.1f} ms  {sd*1000:5.1f} ms')
+"
+}
+
+echo "Prompt perf — repo: $repo ($file_count files)"
+echo "Takes 30s+ to run, avoid system activity for stable results."
+
+# shellcheck disable=SC2086 # intentional word splitting
+for sh in $shells; do
+  benchmark "$sh"
+done
