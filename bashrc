@@ -1,5 +1,15 @@
 [[ $- != *i* ]] && return
 
+if [[ "$OSTYPE" == darwin* ]] && [[ "$BASH" == /bin/bash ]]; then
+  __dotfiles_zsh_banner() {
+    echo ""
+    echo "zsh now fully supported by jqr/dotfiles"
+    PROMPT_COMMAND="${PROMPT_COMMAND/__dotfiles_zsh_banner;/}"
+    unset -f __dotfiles_zsh_banner
+  }
+  PROMPT_COMMAND="__dotfiles_zsh_banner;${PROMPT_COMMAND:-}"
+fi
+
 # shellcheck disable=SC1090 # files are dynamic, loaded by glob
 for file in "$HOME"/.shell.d/*.sh; do
   source "$file"

@@ -9,7 +9,7 @@ hash shellcheck 2>/dev/null || { echo >&2 "shellcheck command required, aborting
 shellcheck -s bash bash_profile bashrc shell.d/*.sh bin/*
 shellcheck -s bash zshrc 2>/dev/null || true
 
-bash -i -c 'exit' 2>&1 | grep -Ev "no job control|^exit$" || true
+bash -i -c 'exit' 2>&1 | grep -Ev "no job control|^exit$|^zsh now fully supported" || true
 zsh -i -c 'exit' || echo "zsh -i had a non-zero exit code"
 
 bin/test-upsert-content

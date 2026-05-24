@@ -67,7 +67,7 @@ for rev in "$@"; do
     HOME="$temp_home" rake -f "$temp_repo/Rakefile" install --quiet
   fi
 
-  output=$(HOME="$temp_home" bash -i -c 'exit' 2>&1 | grep -Ev "no job control|^exit$" || true)
+  output=$(HOME="$temp_home" bash -i -c 'exit' 2>&1 | grep -Ev "no job control|^exit$|^zsh now fully supported" || true)
   if [ -n "$output" ]; then
     echo "FAIL: bash produced unexpected output after installing $rev:"
     echo "$output"
