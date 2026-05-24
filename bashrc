@@ -2,8 +2,7 @@
 
 if [[ "$OSTYPE" == darwin* ]] && [[ "$BASH" == /bin/bash ]]; then
   __dotfiles_zsh_banner() {
-    echo ""
-    echo "zsh now fully supported by jqr/dotfiles"
+    throttle 86400 zsh-banner echo -e "\nzsh now fully supported by jqr/dotfiles"
     PROMPT_COMMAND="${PROMPT_COMMAND/__dotfiles_zsh_banner;/}"
     unset -f __dotfiles_zsh_banner
   }
