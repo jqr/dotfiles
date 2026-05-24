@@ -24,9 +24,14 @@
 #
 # acronym expansion: human explanation
 
-if ! command -v __git_complete &>/dev/null; then
-  __git_complete() { :; }
-fi
+__git_complete_alias() {
+  if [ -n "$ZSH_VERSION" ]; then
+    compdef "$1=$2" 2>/dev/null
+  elif command -v __git_complete &>/dev/null; then
+    # bash git-completion expects _git_diff style, not _git-diff
+    __git_complete "$1" "_${2//-/_}"
+  fi
+}
 
 # git touch changed: Touch every modified file to retrigger tests/builds.
 gtc() {
@@ -131,10 +136,10 @@ git_stash_show(){
 alias gs='git status -sb && GIT_PAGER=cat git stash list'
 # git diff: wtf have I changed? include renames. this doesn't include staged changes.
 alias gd='git diff -M'
-__git_complete gd _git_diff
+__git_complete_alias gd git-diff
 # git diff stats: which files have I changed, and how much?
 alias gds='gd --stat'
-__git_complete gds _git_diff
+__git_complete_alias gds git-diff
 # git diff head: same as gd but includes staged changes.
 alias gdh='gd HEAD'
 # git diff head stats: ... which files and how much?
@@ -160,10 +165,10 @@ gdms() {
 
 # git add: yep, that's what it is.
 alias ga='git add'
-__git_complete ga _git_add
+__git_complete_alias ga git-add
 # git add all: also add things like deletes.
 alias gaa='git add --all'
-__git_complete gaa _git_add
+__git_complete_alias gaa git-add
 # git add patch: interactively select things to add.
 alias gap='git add -p'
 # git add patch wildcard: select changed files by wildcard
@@ -175,15 +180,15 @@ alias 'gap*'=gapw
 
 # git commit: open my editor with a diff and let me write up a description, ^C if you see more in the diff than you wanted.
 alias gc='git commit -v'
-__git_complete gc _git_commit
+__git_complete_alias gc git-commit
 
 # git commit all changed files (not untracked).
 alias gca='gc -a'
-__git_complete gca _git_commit
+__git_complete_alias gca git-commit
 
 # git commit ammend: oh crap, I meant to add this to that commit too! you probably shouldn't do this after pushing commits.
 alias gcam='gc --amend'
-__git_complete gcam _git_commit
+__git_complete_alias gcam git-commit
 
 # git commit fixup: use --fixup on a previous commit and autorebase.
 gcf() {
@@ -216,7 +221,7 @@ gco() {
     git checkout "$@"
   fi
 }
-__git_complete gco _git_checkout
+__git_complete_alias gco git-checkout
 #git checkout main
 gcom() {
   gco "$(git_main_branch)"
@@ -265,7 +270,7 @@ alias git_columnize="column -t -s $'\t'"
 
 # git branch: show local git branches and the most recent commit.
 alias gb='git for-each-ref --sort=committerdate --format="%(refname:short)%09%(subject)" refs/heads/ | git_columnize'
-__git_complete gb _git_branch
+__git_complete_alias gb git-branch
 # git branch unmerged: show branches not merged into this branch.
 alias gbu='git branch -v --no-merged'
 # git branch unmerged main: show branches not merged into main.
