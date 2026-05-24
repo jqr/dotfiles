@@ -1,11 +1,3 @@
-PATH=/opt/homebrew/bin:$PATH
-PATH=/usr/local/bin:$PATH
-PATH=/usr/local/sbin:$PATH
-PATH=/usr/local/share/npm/bin:$PATH
-PATH=~/.cargo/bin:$PATH
-PATH=~/.local/bin:$PATH
-PATH=bin:~/bin:$PATH
-export PATH
 shopt -s checkhash # force path search on stale cache detected
 
 # shellcheck disable=SC1090 # path depends on user's home directory
