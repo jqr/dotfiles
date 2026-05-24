@@ -1,0 +1,34 @@
+#!/bin/bash
+set -e
+
+cd "$(dirname "$0")/.."
+
+to_ms() {
+  echo "$1" | sed 's/0m//;s/s$//' | awk '{printf "%.0f", $1 * 1000}'
+}
+
+profile_shell() {
+  local shell="$1"
+
+  {
+    for f in shell.d/*.sh; do
+      t=$( { time $shell -c "source $f" 2>/dev/null; } 2>&1 | grep real | awk '{print $2}')
+      echo "$(to_ms "$t")ms $f"
+    done
+
+    t=$( { time DOTFILES_SKIP_SHELL_D=1 $shell -i -c 'exit' 2>/dev/null; } 2>&1 | grep real | awk '{print $2}')
+    echo "$(to_ms "$t")ms $shell -i (without shell.d)"
+  } | sort -t'm' -k1 -rn
+
+  echo ""
+
+  t=$( { time $shell -i -c 'exit' 2>/dev/null; } 2>&1 | grep real | awk '{print $2}')
+  echo "$(to_ms "$t")ms $shell -i (total)"
+}
+
+echo "=== bash ==="
+profile_shell bash
+
+echo ""
+echo "=== zsh ==="
+profile_shell zsh
