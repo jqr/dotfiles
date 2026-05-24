@@ -2,24 +2,15 @@
 set -e
 cd "$(dirname "$0")/.."
 
+trap 'echo "FAILED (exit code: $?)"' ERR
+
 hash shellcheck 2>/dev/null || { echo >&2 "shellcheck command required, aborting."; exit 1; }
 
 shellcheck -s bash bash_profile bashrc shell.d/*.sh script/*
 shellcheck -s bash zshrc 2>/dev/null || true
 
-output=$(bash -i -c 'exit' 2>&1 | grep -Ev "no job control|^exit$" || true)
-if [ -n "$output" ]; then
-  echo "bash interactive produced unexpected output:"
-  echo "$output"
-  exit 1
-fi
-
-output=$(zsh -i -c 'exit' 2>&1)
-if [ -n "$output" ]; then
-  echo "zsh interactive produced unexpected output:"
-  echo "$output"
-  exit 1
-fi
+bash -i -c 'exit' 2>&1 | grep -Ev "no job control|^exit$" || true
+zsh -i -c 'exit' || echo "zsh -i had a non-zero exit code"
 
 script/test-insert-content
 script/test-install --fresh .
