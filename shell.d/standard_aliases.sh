@@ -1,4 +1,4 @@
-alias reload='source ~/.${DOTFILES_SHELL}rc && echo "Reloaded ~/.${DOTFILES_SHELL}rc"'
+alias reload='exec $SHELL -l'
 
 alias ..='cd ..'
 alias ...='cd ../..'
