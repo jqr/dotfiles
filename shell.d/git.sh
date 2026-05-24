@@ -412,7 +412,22 @@ git_dirty_state() {
 
 # a helper that wraps a bunch of helpers.
 git_special() {
-  wrap_unless_empty "$(git_mode)" "$(git_commits_ahead)" "$(git_commits_behind)" "$(git_dirty_state)"
+  local mode ahead behind dirty
+  mode=$(git_mode)
+
+  local git_st
+  git_st=$(git status --short --branch 2>/dev/null)
+  if [ -n "$git_st" ]; then
+    local header
+    header=$(echo "$git_st" | head -n 1)
+    case "$header" in *ahead*)    ahead="${header#*ahead }"; ahead="+${ahead%%[],]*}";; esac
+    case "$header" in *behind*)   behind="${header#*behind }"; behind="-${behind%%[],]*}";; esac
+    if [ "$(echo "$git_st" | wc -l)" -gt 1 ]; then
+      dirty="*"
+    fi
+  fi
+
+  wrap_unless_empty "$mode" "$ahead" "$behind" "$dirty"
 }
 
 # a helper that joins strings and wraps them into parens if they're non-empty.
