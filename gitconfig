@@ -16,4 +16,6 @@
   program = gpg
 [checkout]
   defaultRemote = origin
+[rebase]
+  autoSquash = true
 # END GENERATED
