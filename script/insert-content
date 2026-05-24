@@ -1,0 +1,78 @@
+#!/bin/bash
+set -e
+
+if [ $# -lt 2 ] || [ $# -gt 4 ]; then
+  echo "Usage: script/insert-content <source> <target> [<start-marker> <end-marker>]"
+  echo ""
+  echo "Inserts the content of <source> into <target>, replacing any"
+  echo "existing block between the start and end markers."
+  echo "If no existing block is found, appends the content."
+  echo "When markers are not specified, the first and last"
+  echo "non-blank lines of <source> are used."
+  echo "Writes atomically via a temp file."
+  exit 1
+fi
+
+source_file="$1"
+target_file="$2"
+
+insert=$(cat "$source_file")
+start_marker="${3:-$(head -1 "$source_file")}"
+end_marker="${4:-$(grep -v '^[[:space:]]*$' "$source_file" | tail -1)}"
+
+if [ -z "$start_marker" ] || [ -z "$end_marker" ]; then
+  echo "ERROR: markers must not be blank" >&2
+  exit 1
+fi
+
+before=()
+after=()
+target=before
+found_start=false
+found_end=false
+
+if [ -f "$target_file" ]; then
+  while IFS= read -r line || [ -n "$line" ]; do
+    if [ "$line" = "$start_marker" ]; then
+      found_start=true
+      target=skip
+    elif [ "$line" = "$end_marker" ]; then
+      if [ "$target" = "skip" ]; then
+        found_end=true
+        target=after
+      elif [ "$target" != "after" ]; then
+        found_end=true
+      fi
+    elif [ "$target" = "before" ]; then
+      before+=("$line")
+    elif [ "$target" = "after" ]; then
+      after+=("$line")
+    fi
+  done < "$target_file"
+fi
+
+if [ "$found_start" = true ] && [ "$found_end" = false ]; then
+  echo "ERROR: found start marker but no end marker in $target_file" >&2
+  exit 1
+fi
+
+if [ "$found_start" = false ] && [ "$found_end" = true ]; then
+  echo "ERROR: found end marker but no start marker in $target_file" >&2
+  exit 1
+fi
+
+if [ "$found_start" = false ]; then
+  echo "WARNING: This is the first time editing $target_file automatically, you should verify the contents." >&2
+fi
+
+tmpfile="${target_file}.tmp"
+{
+  for line in "${before[@]}"; do
+    printf '%s\n' "$line"
+  done
+  printf '%s\n' "$insert"
+  for line in "${after[@]}"; do
+    printf '%s\n' "$line"
+  done
+} > "$tmpfile"
+mv "$tmpfile" "$target_file"

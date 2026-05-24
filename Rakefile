@@ -54,20 +54,31 @@ task :install do
 
   INSERT_FILES.each do |file|
     insert = File.read(file).strip
-    lines = insert.split("\n")
+    start_marker = insert.split("\n").first
+    end_marker = insert.split("\n").last
 
-    matcher = Regexp.new(Regexp.escape(lines.first) + '.*?' + Regexp.escape(lines.last), Regexp::MULTILINE)
-
-    contents = File.exist?("#{home}/.#{file}") ? File.read("#{home}/.#{file}") : ''
+    existing = File.exist?("#{home}/.#{file}") ? File.readlines("#{home}/.#{file}") : []
 
     puts "Insert content into #{home}/.#{file}"
-    output =
-      if contents =~ matcher
-        contents.sub(matcher, insert)
-      else
-        puts "WARNING: This is the first time editing #{home}/.#{file} automatically, you should verify the contents."
-        insert + "\n" + contents
+    before, after = [], []
+    target = before
+    found = false
+    existing.each do |line|
+      if line.strip == start_marker
+        found = true
+        target = nil
+      elsif target.nil? && line.strip == end_marker
+        target = after
+      elsif target
+        target << line
       end
+    end
+
+    unless found
+      puts "WARNING: This is the first time editing #{home}/.#{file} automatically, you should verify the contents."
+    end
+
+    output = (before.map(&:chomp) + [insert] + after.map(&:chomp)).join("\n") + "\n"
 
     tmpfile = "#{home}/.#{file}.tmp"
     File.write(tmpfile, output)

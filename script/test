@@ -21,6 +21,7 @@ if [ -n "$output" ]; then
   exit 1
 fi
 
+script/test-insert-content
 script/test-install --fresh .
 
 # Test upgrade from recent milestones in parallel
