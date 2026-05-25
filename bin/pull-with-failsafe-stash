@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+
+cd "$(dirname "$0")/.."
+
+if git diff --quiet && git diff --cached --quiet; then
+  echo "Working tree is clean, pulling..."
+  git pull
+else
+  echo "Local changes detected, stashing before pull..."
+  original_head=$(git rev-parse HEAD)
+  git stash
+  git pull
+
+  echo "Restoring local changes..."
+  if ! git stash pop --quiet 2>/dev/null; then
+    echo "Local changes conflict with pulled updates."
+    echo "Reverting pull and restoring your changes..."
+    git reset --hard "$original_head" --quiet
+    git stash pop --quiet
+    echo "Reverted to $(git rev-parse --short HEAD). Your local changes are intact."
+    echo "Resolve your changes and try again."
+    exit 1
+  fi
+fi
