@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 # shellcheck source=test/helpers.sh
 source "$(dirname "$0")/helpers.sh"
 

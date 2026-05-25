@@ -1,7 +1,7 @@
 #!/bin/bash
 # Shared test infrastructure — source this from test files.
-
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
+set -euo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 __pass=0
 __fail=0

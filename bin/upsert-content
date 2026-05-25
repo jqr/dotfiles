@@ -1,5 +1,6 @@
 #!/bin/bash
-set -e
+set -euo pipefail
+cd "$(dirname "$0")/.."
 
 if [ $# -lt 2 ] || [ $# -gt 4 ]; then
   echo "Usage: bin/upsert-content <source> <target> [<start-marker> <end-marker>]"
@@ -67,12 +68,16 @@ fi
 
 tmpfile="${target_file}.tmp"
 {
-  for line in "${before[@]}"; do
-    printf '%s\n' "$line"
-  done
+  if [ ${#before[@]} -gt 0 ]; then
+    for line in "${before[@]}"; do
+      printf '%s\n' "$line"
+    done
+  fi
   printf '%s\n' "$insert"
-  for line in "${after[@]}"; do
-    printf '%s\n' "$line"
-  done
+  if [ ${#after[@]} -gt 0 ]; then
+    for line in "${after[@]}"; do
+      printf '%s\n' "$line"
+    done
+  fi
 } > "$tmpfile"
 mv "$tmpfile" "$target_file"

@@ -8,8 +8,7 @@
 # with working tree size — a tiny repo hides the actual prompt overhead.
 #
 # Requires: hyperfine (brew install hyperfine)
-
-set -e
+set -euo pipefail
 cd "$(dirname "$0")/.."
 
 bin/require-command hyperfine "reliably tests performance of command line programs"

@@ -1,6 +1,5 @@
 #!/bin/bash
-set -e
-
+set -euo pipefail
 cd "$(dirname "$0")/.."
 
 min_gap="${1:-14}"

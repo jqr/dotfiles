@@ -2,6 +2,8 @@
 # Check that a command exists, offer to install if missing.
 #
 # Usage: bin/require-command <command> [description]
+set -euo pipefail
+cd "$(dirname "$0")/.."
 
 if [ $# -eq 0 ]; then
   echo "Usage: bin/require-command <command> [description]"

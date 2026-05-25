@@ -1,6 +1,5 @@
 #!/bin/bash
-set -e
-
+set -euo pipefail
 cd "$(dirname "$0")/.."
 
 if git diff --quiet && git diff --cached --quiet; then

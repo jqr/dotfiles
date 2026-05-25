@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 cd "$(dirname "$0")/.."
 
 # Separate shell args from repo path
@@ -14,7 +14,7 @@ done
 
 echo "=== Shell load time ==="
 echo ""
-bin/profile-load "${shells[@]}"
+bin/profile-load ${shells[@]+"${shells[@]}"}
 
 echo ""
 echo ""

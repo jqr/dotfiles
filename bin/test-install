@@ -1,8 +1,8 @@
 #!/bin/bash
-set -e
+set -euo pipefail
+cd "$(dirname "$0")/.."
 
-repo_dir="$(cd "$(dirname "$0")/.." && pwd)"
-
+repo_dir=$(pwd -P)
 fresh=false
 if [ "${1:-}" = "--fresh" ]; then
   fresh=true
