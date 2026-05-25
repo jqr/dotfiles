@@ -17,6 +17,7 @@ test/reload.sh bash
 test/reload.sh zsh
 test/git-prompt.sh bash
 test/git-prompt.sh zsh
+test/shell-compat.sh
 bin/test-install --fresh . >/dev/null
 
 # Test upgrade from recent milestones in parallel
