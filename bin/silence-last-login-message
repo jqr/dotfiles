@@ -1,0 +1,5 @@
+#!/bin/bash
+set -euo pipefail
+
+touch ~/.hushlogin
+echo "Created ~/.hushlogin — new terminal sessions will no longer show 'Last login' messages."

@@ -26,6 +26,12 @@ Shell config is modular. `bashrc` and `zshrc` both source every `*.sh` file in `
 
 Any files matching `local.*` in `shell.d/` are not tracked by git.
 
+## Optional Setup
+
+```sh
+bin/silence-last-login-message    # suppress "Last login" line in new terminals
+```
+
 ## Testing
 
 ```sh
