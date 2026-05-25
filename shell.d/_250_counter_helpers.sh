@@ -60,6 +60,31 @@ run_after_n() {
   fi
 }
 
+# Run a command only for the first N invocations.
+#
+#   run_before_n 3 my-key echo "heads up"  # prints "heads up"
+#   run_before_n 3 my-key echo "heads up"  # prints "heads up"
+#   run_before_n 3 my-key echo "heads up"  # hidden
+#
+# Combines nicely with throttle, see Combining Helpers below.
+run_before_n() {
+  local threshold="$1" key="$2"
+  shift 2
+
+  local counter="$HOME/.cache/dotfiles/run_before_n/$key"
+  mkdir -p "$(dirname "$counter")"
+
+  local count
+  count=$([[ -f "$counter" ]] && cat "$counter" || echo 0)
+  count=${count:-0}
+  count=$((count + 1))
+  echo "$count" > "$counter"
+
+  if (( count < threshold )); then
+    "$@"
+  fi
+}
+
 # Combining Helpers
 #
 # throttle and run_after_n compose in handy ways:
@@ -77,3 +102,10 @@ run_after_n() {
 #   run_after_n 100 fetchSlower \
 #   throttle 86400 fetchSlower \
 #   sleep 1
+#
+#
+# throttle ... run_before_n ...
+#   # Warn about a deprecation once a day, for the first 5 days.
+#   throttle 86400 deprecation \
+#   run_before_n 5 deprecation \
+#   echo "This command is going away, use 'foo' instead."
