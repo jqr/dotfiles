@@ -106,7 +106,18 @@ alias "g{p"='echo -n "Name this stash (optional): "; read -r name; if [[ -n $nam
 # git stash staged: ... but select patches which are staged.
 alias "g{s"='git stash --staged'
 # git unstash: unstash the most recent stash.
-alias "g}"='git stash pop'
+if [ -n "$ZSH_VERSION" ]; then
+  _dotfiles_accept_line() {
+    case "$BUFFER" in
+      'g}') BUFFER="git stash pop" ;;
+      'g} '*) BUFFER="git stash pop ${BUFFER#g\} }" ;;
+    esac
+    zle .accept-line
+  }
+  zle -N accept-line _dotfiles_accept_line
+else
+  alias "g}"='git stash pop'
+fi
 # git unstash branch: actually check out the revision where this was stashed so as not to make a mess.
 alias "g}b"='git stash branch'
 alias "g{}"="git_stash_show"

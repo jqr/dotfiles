@@ -14,7 +14,11 @@ names_file="$work/names.txt"
 grep -hE '^\s*alias ' shell.d/*.sh | sed "s/^[[:space:]]*alias //" | sed "s/=.*//" | tr -d "'" | tr -d '"' | sort -u | sed 's/$/\talias/' > "$names_file"
 grep -hE '^[a-zA-Z_][a-zA-Z0-9_]*\(\)|^function [a-zA-Z_][a-zA-Z0-9_]*' shell.d/*.sh | sed 's/().*//' | sed 's/^function //' | sed 's/[( {].*//' | grep -v '^_' | sort -u | sed 's/$/\tfunction/' >> "$names_file"
 
+# Names handled by ZLE widgets in zsh (callable interactively but not via type)
+zle_names="g}"
+
 # Check which names are callable in each shell (one shell invocation each)
+# shellcheck disable=SC2016 # intentional: script is evaluated inside the spawned shell
 check_script='
 while IFS="$(printf "\t")" read -r name kind; do
   if eval "type $name" >/dev/null 2>&1; then
@@ -25,6 +29,10 @@ done < "$1"
 
 bash_callable=$(HOME="$work" bash -i -c "$check_script" _ "$names_file" 2>/dev/null)
 zsh_callable=$(HOME="$work" zsh -i -c "$check_script" _ "$names_file" 2>/dev/null)
+# Add ZLE-handled names to zsh callable list
+for n in $zle_names; do
+  zsh_callable="$zsh_callable"$'\n'"$n"
+done
 
 while IFS=$'\t' read -r name kind; do
   [ -z "$name" ] && continue
