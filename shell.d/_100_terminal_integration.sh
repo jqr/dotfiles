@@ -1,5 +1,5 @@
 if [ -n "${GHOSTTY_RESOURCES_DIR}" ]; then
-  builtin source "${GHOSTTY_RESOURCES_DIR}/shell-integration/${DOTFILES_SHELL}/ghostty.${DOTFILES_SHELL}"
+  builtin source "${GHOSTTY_RESOURCES_DIR}/shell-integration/${DOTFILES_SHELL}/ghostty-integration"
 fi
 
 if [ "$TERM_PROGRAM" = "iTerm.app" ]; then
