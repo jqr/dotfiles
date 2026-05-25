@@ -176,7 +176,8 @@
 |-------|-------------|-----|
 | `ql <file>` | Quick Look preview | Preview without opening an app |
 | `pman <cmd>` | Open man page as PDF in Preview | Read man pages comfortably |
-| `openports` | List all listening TCP ports | What's using which port? |
+| `openports` | List all listening TCP ports | See every listening port (uses sudo for full picture) |
+| `port <number>` | Show what's listening on a specific port | What's on port 3000? |
 | `x86` | Open a Rosetta (x86_64) shell | Run x86 binaries on Apple Silicon |
 | `notify <msg> <title>` | macOS notification + terminal banner | Get alerted when something finishes |
 
