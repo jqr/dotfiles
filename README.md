@@ -1,4 +1,4 @@
-Dotfiles for bash/zsh on macOS.
+Dotfiles for bash/zsh on macOS. See the **[Cheat Sheet](CHEATSHEET.md)** for a quick reference of all aliases and commands.
 
 # Install
 
