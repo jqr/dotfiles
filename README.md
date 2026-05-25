@@ -10,7 +10,13 @@ bin/install
 
 This symlinks config files (`bashrc`, `zshrc`, `gitconfig`, etc.) into your home directory and inserts generated blocks into `~/.gemrc` and `~/.gitconfig`.
 
-Re-run `bin/install` after pulling to pick up changes. It will clean up stale symlinks from removed files automatically.
+To pull the latest changes and re-install:
+
+```sh
+dotfiles-update
+```
+
+You'll be notified every couple weeks when updates are available, just run `dotfiles-update` when prompted.
 
 ## How it works
 
