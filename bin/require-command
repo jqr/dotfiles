@@ -1,0 +1,24 @@
+#!/bin/bash
+# Check that a command exists, offer to install if missing.
+#
+# Usage: bin/require-command <command> [description]
+
+if [ $# -eq 0 ]; then
+  echo "Usage: bin/require-command <command> [description]"
+  echo "Checks that a command exists, offers to brew install if missing."
+  exit 1
+fi
+
+cmd="$1"
+desc="${2:-$cmd}"
+
+if ! hash "$cmd" 2>/dev/null; then
+  echo >&2 "$cmd not found ($desc)."
+  echo -n >&2 "Install with 'brew install $cmd'? (y/N) "
+  read -r yn
+  if [ "$yn" = "y" ] || [ "$yn" = "Y" ]; then
+    brew install "$cmd"
+  else
+    exit 1
+  fi
+fi

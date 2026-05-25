@@ -12,7 +12,7 @@
 set -e
 cd "$(dirname "$0")/.."
 
-hash hyperfine 2>/dev/null || { echo >&2 "hyperfine required: brew install hyperfine"; exit 1; }
+bin/require-command hyperfine "reliably tests performance of command line programs"
 
 shells=""
 repo_arg=""

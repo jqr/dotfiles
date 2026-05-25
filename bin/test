@@ -4,7 +4,7 @@ cd "$(dirname "$0")/.."
 
 trap 'echo "FAILED (exit code: $?)"' ERR
 
-hash shellcheck 2>/dev/null || { echo >&2 "shellcheck command required, aborting."; exit 1; }
+bin/require-command shellcheck "verifies shell scripts are written well"
 
 shellcheck -s bash bash_profile bashrc shell.d/*.sh bin/* test/*.sh
 shellcheck -s bash zshrc 2>/dev/null || true
