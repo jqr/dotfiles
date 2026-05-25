@@ -95,7 +95,7 @@ benchmark() {
   HOME="$work" hyperfine \
     --shell="$shell" \
     --warmup 3 \
-    --style none \
+    --style full \
     --sort mean-time \
     --reference "${preamble}" \
     --reference-name "baseline" \

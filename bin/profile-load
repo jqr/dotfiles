@@ -1,41 +1,42 @@
 #!/bin/bash
-set -e
+# Profile shell startup time, broken down by shell.d file.
+#
+# Usage: bin/profile-load [bash|zsh]
+#
+# Requires: hyperfine (brew install hyperfine)
 
+set -e
 cd "$(dirname "$0")/.."
 
-to_ms() {
-  echo "$1" | sed 's/0m//;s/s$//' | awk '{printf "%.0f", $1 * 1000}'
-}
+hash hyperfine 2>/dev/null || { echo >&2 "hyperfine required: brew install hyperfine"; exit 1; }
 
 profile_shell() {
   local shell="$1"
 
-  {
-    for f in shell.d/*.sh; do
-      t=$( { time $shell -c "source $f" 2>/dev/null; } 2>&1 | grep real | awk '{print $2}')
-      echo "$(to_ms "$t")ms $f"
-    done
+  local cmds=()
+  for f in shell.d/*.sh; do
+    cmds+=(-n "$f" "$shell -c '. $f'")
+  done
+  cmds+=(-n "$shell -i (without shell.d)" "env DOTFILES_SKIP_SHELL_D=1 $shell -i -c exit")
+  cmds+=(-n "$shell -i (total)" "$shell -i -c exit")
 
-    t=$( { time DOTFILES_SKIP_SHELL_D=1 $shell -i -c 'exit' 2>/dev/null; } 2>&1 | grep real | awk '{print $2}')
-    echo "$(to_ms "$t")ms $shell -i (without shell.d)"
-  } | sort -t'm' -k1 -rn
-
-  echo ""
-
-  t=$( { time $shell -i -c 'exit' 2>/dev/null; } 2>&1 | grep real | awk '{print $2}')
-  echo "$(to_ms "$t")ms $shell -i (total)"
+  echo "=== $shell ==="
+  hyperfine \
+    --shell=none \
+    --warmup 1 \
+    --style full \
+    --time-unit millisecond \
+    --sort mean-time \
+    --ignore-failure \
+    "${cmds[@]}" 2>/dev/null
 }
 
 if [ $# -gt 0 ]; then
   for s in "$@"; do
-    echo "=== $s ==="
     profile_shell "$s"
-    echo ""
   done
 else
-  echo "=== bash ==="
   profile_shell bash
   echo ""
-  echo "=== zsh ==="
   profile_shell zsh
 fi
