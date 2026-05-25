@@ -1,4 +1,8 @@
-alias reload='exec $SHELL -l'
+if [ -n "$ZSH_VERSION" ]; then
+  alias reload='exec zsh -l'
+elif [ -n "$BASH_VERSION" ]; then
+  alias reload='exec bash -l'
+fi
 
 alias ..='cd ..'
 alias ...='cd ../..'
