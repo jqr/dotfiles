@@ -181,7 +181,32 @@ __git_complete_alias ga git-add
 alias gaa='git add --all'
 __git_complete_alias gaa git-add
 # git add patch: interactively select things to add.
-alias gap='git add -p'
+# Wraps git add -p to include untracked files, cleaning up any that were skipped.
+gap() {
+  if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+    echo "Not a git repository" >&2
+    return 1
+  fi
+
+  local tmpfile
+  tmpfile=$(mktemp)
+  trap 'rm -f "$tmpfile"' RETURN
+
+  git ls-files --others --exclude-standard -z "$@" > "$tmpfile"
+  if [[ -s "$tmpfile" ]]; then
+    xargs -0 git add --intent-to-add < "$tmpfile"
+  fi
+
+  git add -p "$@"
+
+  if [[ -s "$tmpfile" ]]; then
+    while IFS= read -r -d '' f; do
+      if git diff --name-only -- "$f" 2>/dev/null | grep -q .; then
+        git reset -- "$f" > /dev/null 2>&1
+      fi
+    done < "$tmpfile"
+  fi
+}
 # git add patch wildcard: select changed files by wildcard
 gapw() {
   gap "*$1*"
