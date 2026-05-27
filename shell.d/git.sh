@@ -293,6 +293,10 @@ function gu() {
 gri() {
   git rebase -i "${1:-HEAD~$(git_commits_ahead | sed "s/[^0-9]//")}"
 }
+# git rebase main onto main: rebase the current branch onto main.
+grmom() {
+  git rebase --onto "$(git_main_branch)" "$(git_main_branch)"
+}
 # git rebase continue: continue on once you're satisified with changes to the current commit.
 alias grc='git rebase --continue'
 
