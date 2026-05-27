@@ -1,6 +1,22 @@
 if type rv > /dev/null 2>&1; then
   eval "$(rv shell init "$DOTFILES_SHELL")"
   eval "$(rv shell completions "$DOTFILES_SHELL")"
+  # rv's DEBUG trap runs _rv_autoload_hook before every command. On bash 3.2,
+  # this fires inside readline completion functions, interfering with
+  # git-completion.bash's unquoted [ $c -lt $cword ] tests.
+  # Replace the DEBUG trap with a PROMPT_COMMAND hook that only fires on
+  # directory changes (which is all rv needs).
+  if [[ -z "$ZSH_VERSION" && "${BASH_VERSINFO[0]}" -lt 4 ]]; then
+    trap - DEBUG
+    _rv_prompt_hook() {
+      if [[ "$_rv_prev_pwd" != "$PWD" ]]; then
+        _rv_prev_pwd="$PWD"
+        _rv_autoload_hook
+      fi
+    }
+    _rv_prev_pwd="$PWD"
+    PROMPT_COMMAND="_rv_prompt_hook;${PROMPT_COMMAND}"
+  fi
 elif which rbenv > /dev/null 2>&1; then
   eval "$(rbenv init -)"
 fi
