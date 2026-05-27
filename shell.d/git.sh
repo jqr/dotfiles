@@ -377,10 +377,10 @@ alias grpo='git remote prune origin'
 
 # git garbage collect: removes git data which is no longer useful, like deleted branches, etc.
 ggc() {
-  set -- "$(du -ks)"
+  set -- $(du -ks)
   local before="$1"
   git reflog expire --expire=1.minute "$(git_main_branch)" && git fsck --unreachable && git prune && git gc
-  set -- "$(du -ks)"
+  set -- $(du -ks)
   local after="$1"
   echo "Cleaned up $((before-after)) kb."
 }
