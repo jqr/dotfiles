@@ -147,10 +147,31 @@ git_stash_show(){
 alias gs='git status -sb && GIT_PAGER=cat git stash list'
 # git diff: wtf have I changed? include renames. this doesn't include staged changes.
 alias gd='git diff -M'
-__git_complete_alias gd git-diff
+__git_complete_branches_and_dirty() {
+  local cmd="$1"
+  if [ -n "$ZSH_VERSION" ]; then
+    # shellcheck disable=SC2154 # words/CURRENT are set by zsh completion system
+    eval "_${cmd}() {
+      local -a dirty branches
+      dirty=(\${(f)\"\$(git diff --name-only 2>/dev/null)\"})
+      branches=(\${(f)\"\$(git for-each-ref --format='%(refname:short)' refs/heads/ refs/remotes/ 2>/dev/null)\"})
+      _alternative 'files:changed files:((\${dirty[@]}))' 'branches:branches:((\${branches[@]}))'
+    }"
+    compdef "_${cmd}" "$cmd" 2>/dev/null
+  elif command -v __gitcomp_file &>/dev/null; then
+    eval "_${cmd}() {
+      local dirty branches
+      dirty=\$(git diff --name-only 2>/dev/null)
+      branches=\$(git for-each-ref --format='%(refname:short)' refs/heads/ refs/remotes/ 2>/dev/null)
+      COMPREPLY=(\$(compgen -W \"\$dirty \$branches\" -- \"\${COMP_WORDS[COMP_CWORD]}\"))
+    }"
+    complete -F "_${cmd}" "$cmd"
+  fi
+}
+__git_complete_branches_and_dirty gd
 # git diff stats: which files have I changed, and how much?
 alias gds='gd --stat'
-__git_complete_alias gds git-diff
+__git_complete_branches_and_dirty gds
 # git diff head: same as gd but includes staged changes.
 alias gdh='gd HEAD'
 # git diff head stats: ... which files and how much?
@@ -190,7 +211,7 @@ gap() {
 
   local tmpfile
   tmpfile=$(mktemp)
-  trap 'rm -f "$tmpfile"' RETURN
+  trap 'rm -f "$tmpfile"' EXIT
 
   git ls-files --others --exclude-standard -z "$@" > "$tmpfile"
   if [[ -s "$tmpfile" ]]; then
@@ -368,7 +389,7 @@ gbrdm() {
     echo -n "Delete listed branches from $upstream? (y/N) "
     local yes_or_no
     read -r yes_or_no
-    if [ "$yes_or_no" == "y" ]; then
+    if [ "$yes_or_no" = "y" ]; then
       echo "$delete" | xargs -n 100 git push "$upstream" --delete
       git remote prune "$upstream"
     fi
