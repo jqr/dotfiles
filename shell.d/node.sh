@@ -1,16 +1,12 @@
-export NVM_DIR="$HOME/.nvm"
-
-__load_nvm() {
-  unset -f nvm node npm npx
-  # shellcheck disable=SC1091 # paths depend on nvm installation
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  # shellcheck disable=SC1091
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-}
-
-nvm()  { __load_nvm; nvm  "$@"; }
-node() { __load_nvm; node "$@"; }
-npm()  { __load_nvm; npm  "$@"; }
-npx()  { __load_nvm; npx  "$@"; }
+if command -v fnm > /dev/null 2>&1; then
+  # fnm leaks a new fnm_multishells/<pid>/bin onto PATH every `fnm env`
+  # (https://github.com/Schniz/fnm/pull/1309). In nested/reloaded shells these
+  # accumulate unbounded, bloating PATH (hundreds of entries) and slowing down
+  # anything that globs it during init. Only init once per process tree;
+  # nested shells inherit FNM_MULTISHELL_PATH and skip it.
+  if [ -z "$FNM_MULTISHELL_PATH" ]; then
+    eval "$(fnm env --use-on-cd)"
+  fi
+fi
 
 alias node-repl='rlwrap node-repl || node-repl'
