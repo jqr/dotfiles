@@ -1,5 +1,6 @@
 .DS_Store
 Thumbs.db
 .claude/*.local.*
+.claude/*.lock
 .claude/worktrees
 .direnv
