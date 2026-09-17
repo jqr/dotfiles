@@ -156,6 +156,9 @@
 
 | Alias | Description | Why |
 |-------|-------------|-----|
+| `ruby-manager` | Show the active version manager and ruby | Which ruby is this shell on? |
+| `use-rbenv [version]` | Switch this shell to rbenv, optionally picking a version | Need a ruby older than `rv` supports |
+| `use-rv` | Switch this shell back to `rv` | Return to the default manager |
 | `r` | `rails` | Rails shorthand |
 | `rc` | `rails console` | Open a REPL with your app loaded |
 | `rs` | `rails server` | Start the dev server |
