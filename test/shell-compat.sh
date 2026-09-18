@@ -12,7 +12,7 @@ ln -s "$PWD/shell.d" "$work/.shell.d"
 # Extract alias and function names defined in our shell.d files
 names_file="$work/names.txt"
 grep -hE '^\s*alias ' shell.d/*.sh | sed "s/^[[:space:]]*alias //" | sed "s/=.*//" | tr -d "'" | tr -d '"' | sort -u | sed 's/$/\talias/' > "$names_file"
-grep -hE '^[a-zA-Z_][a-zA-Z0-9_]*\(\)|^function [a-zA-Z_][a-zA-Z0-9_]*' shell.d/*.sh | sed 's/().*//' | sed 's/^function //' | sed 's/[( {].*//' | grep -v '^_' | sort -u | sed 's/$/\tfunction/' >> "$names_file"
+grep -hE '^[a-zA-Z_][a-zA-Z0-9_-]*\(\)|^function [a-zA-Z_][a-zA-Z0-9_-]*' shell.d/*.sh | sed 's/().*//' | sed 's/^function //' | sed 's/[( {].*//' | grep -v '^_' | sort -u | sed 's/$/\tfunction/' >> "$names_file"
 
 # Names handled by ZLE widgets in zsh (callable interactively but not via type)
 zle_names="g}"
