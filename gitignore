@@ -3,4 +3,5 @@ Thumbs.db
 .claude/*.local.*
 .claude/*.lock
 .claude/worktrees
+.claude/.cc-writes/
 .direnv
